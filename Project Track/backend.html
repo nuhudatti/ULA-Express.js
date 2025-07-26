@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Implementation with MySQL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        .slide { display: none; }
+        .active-slide { display: block; }
+        .completed { background-color: #d1fae5; border-left-color: #10b981; }
+        .tab-button.active { background-color: #3b82f6; color: white; }
+        .code-explanation { display: none; }
+        .code-block { position: relative; }
+        .copy-btn { 
+            position: absolute; 
+            top: 0.5rem; 
+            right: 0.5rem; 
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .db-visual {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .table-visual {
+            background: white;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-800 mb-3">🗳️ Voter Database System</h1>
+            <p class="text-xl text-gray-600">Adding MySQL CRUD operations to your authentication app</p>
+            <div class="mt-6 bg-blue-100 border-l-4 border-blue-500 p-4 inline-block">
+                <p class="text-blue-700">You'll learn to build:</p>
+                <ul class="list-disc list-inside text-left">
+                    <li>MySQL Database Setup</li>
+                    <li>Voter Data Model</li>
+                    <li>Admin CRUD Operations</li>
+                    <li>Secure Data Collection</li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Database Learning Progress</h2>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div id="progress-bar" class="bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+            </div>
+            <div class="grid grid-cols-5 gap-2 text-sm text-center">
+                <div class="p-2 rounded completed" id="step-1-indicator">1. Setup</div>
+                <div class="p-2 rounded bg-gray-100" id="step-2-indicator">2. Database</div>
+                <div class="p-2 rounded bg-gray-100" id="step-3-indicator">3. Backend</div>
+                <div class="p-2 rounded bg-gray-100" id="step-4-indicator">4. Frontend</div>
+                <div class="p-2 rounded bg-gray-100" id="step-5-indicator">5. Admin</div>
+            </div>
+        </div>
+
+        <!-- Slides Container -->
+        <div id="slides-container">
+            <!-- Slide 1: Introduction -->
+            <div class="slide active-slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-1">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">From Files to Database</h2>
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">We're upgrading our authentication system to use a real MySQL database instead of the temporary users.json file. Here's what we'll accomplish:</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">🛢️</div>
+                            <h3 class="font-bold text-green-800 text-center">Database Setup</h3>
+                            <p class="text-green-700 text-sm mt-1">Install MySQL and create our voter database</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">📊</div>
+                            <h3 class="font-bold text-blue-800 text-center">Data Modeling</h3>
+                            <p class="text-blue-700 text-sm mt-1">Design tables for voters and admins</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">🔧</div>
+                            <h3 class="font-bold text-purple-800 text-center">CRUD Operations</h3>
+                            <p class="text-purple-700 text-sm mt-1">Create, Read, Update, Delete voter records</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                        <h4 class="font-bold text-yellow-800 mb-2">🏛️ Real-World Analogy</h4>
+                        <p class="text-yellow-700">Think of this like upgrading from a paper notebook to a digital filing system:</p>
+                        <table class="w-full mt-2">
+                            <thead>
+                                <tr class="bg-yellow-100">
+                                    <th class="p-2 text-left">Paper System</th>
+                                    <th class="p-2 text-left">Database System</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-yellow-200">
+                                    <td class="p-2">Notebook pages</td>
+                                    <td class="p-2">Database tables</td>
+                                </tr>
+                                <tr class="border-b border-yellow-200">
+                                    <td class="p-2">Handwritten entries</td>
+                                    <td class="p-2">SQL queries</td>
+                                </tr>
+                                <tr class="border-b border-yellow-200">
+                                    <td class="p-2">Manual searching</td>
+                                    <td class="p-2">Instant queries</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2">Single user access</td>
+                                    <td class="p-2">Multiple concurrent users</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">📚 What You'll Learn</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>MySQL installation and basic commands</li>
+                            <li>Database design principles</li>
+                            <li>Connecting Node.js to MySQL</li>
+                            <li>Building admin interfaces</li>
+                            <li>Secure data handling</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button class="invisible px-4 py-2 rounded-md"></button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Get Started →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 2: MySQL Setup -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-2">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 1: MySQL Database Setup</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">First, we'll install MySQL and set up our database. MySQL is like a digital filing cabinet that organizes and manages our voter data.</p>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-bash"># Install MySQL (Ubuntu/Debian)
+sudo apt update
+sudo apt install mysql-server
+
+# Secure the installation
+sudo mysql_secure_installation
+
+# Log in to MySQL
+sudo mysql -u root -p
+
+# Create our database
+CREATE DATABASE voter_db;
+
+# Create a dedicated user
+CREATE USER 'voter_admin'@'localhost' IDENTIFIED BY 'securepassword123';
+
+# Grant privileges
+GRANT ALL PRIVILEGES ON voter_db.* TO 'voter_admin'@'localhost';
+
+# Refresh privileges
+FLUSH PRIVILEGES;
+
+# Exit MySQL
+exit</code></pre>
+                    </div>
+                    
+                    <button onclick="toggleExplanation('mysql-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                        Explain These Commands
+                    </button>
+                    
+                    <div id="mysql-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                        <h4 class="font-bold text-gray-800 mb-2">MySQL Setup Explained:</h4>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>
+                                <span class="font-semibold">Installation</span> - Gets MySQL running on your system
+                            </li>
+                            <li>
+                                <span class="font-semibold">Secure Installation</span> - Sets root password and removes insecure defaults
+                            </li>
+                            <li>
+                                <span class="font-semibold">Database Creation</span> - Makes a dedicated database for our voter system
+                            </li>
+                            <li>
+                                <span class="font-semibold">User Creation</span> - Creates a specific user with limited privileges
+                                <span class="text-gray-600 block">(Better than using root for security)</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold">Privileges</span> - Gives our user access to the voter database
+                            </li>
+                        </ul>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-400 p-3 mt-3">
+                            <h4 class="font-bold text-green-800 mb-1">💡 Windows/Mac Users:</h4>
+                            <p class="text-green-700">Download MySQL Installer from <a href="https://dev.mysql.com/downloads/installer/" class="text-blue-600 underline" target="_blank">mysql.com</a> or use tools like XAMPP/WAMP that include MySQL.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 border-l-4 border-purple-400 p-4 mt-4">
+                        <h4 class="font-bold text-purple-800 mb-2">Testing Your Installation</h4>
+                        <p class="text-purple-700">Verify MySQL is working by logging in with your new user:</p>
+                        <div class="bg-gray-800 rounded-md p-3 mt-2">
+                            <pre class="text-green-400 text-sm"><code class="language-bash">mysql -u voter_admin -p
+# Enter your password when prompted
+
+# Show databases (should see voter_db)
+SHOW DATABASES;
+
+# Exit
+exit</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Database Design -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-3">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 2: Designing Our Database</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">We need to design tables to store voter information. Think of these like spreadsheets where each row is a voter and each column is a piece of information.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="font-bold text-lg mb-3">Voters Table Structure</h3>
+                            <div class="table-visual p-4 mb-4">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="p-2 text-left">Column</th>
+                                            <th class="p-2 text-left">Type</th>
+                                            <th class="p-2 text-left">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b">
+                                            <td class="p-2">id</td>
+                                            <td class="p-2">INT</td>
+                                            <td class="p-2">Unique voter ID</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">name</td>
+                                            <td class="p-2">VARCHAR(100)</td>
+                                            <td class="p-2">Full name</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">age</td>
+                                            <td class="p-2">INT</td>
+                                            <td class="p-2">Age in years</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">local_government</td>
+                                            <td class="p-2">VARCHAR(50)</td>
+                                            <td class="p-2">LG of residence</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">relationship_status</td>
+                                            <td class="p-2">VARCHAR(20)</td>
+                                            <td class="p-2">Single/Married/Divorced</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">created_at</td>
+                                            <td class="p-2">TIMESTAMP</td>
+                                            <td class="p-2">Registration date</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-3">Users Table (Upgraded)</h3>
+                            <div class="table-visual p-4">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="p-2 text-left">Column</th>
+                                            <th class="p-2 text-left">Type</th>
+                                            <th class="p-2 text-left">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b">
+                                            <td class="p-2">id</td>
+                                            <td class="p-2">INT</td>
+                                            <td class="p-2">Unique user ID</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">username</td>
+                                            <td class="p-2">VARCHAR(50)</td>
+                                            <td class="p-2">Login username</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">password</td>
+                                            <td class="p-2">VARCHAR(255)</td>
+                                            <td class="p-2">Hashed password</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">is_admin</td>
+                                            <td class="p-2">BOOLEAN</td>
+                                            <td class="p-2">Admin flag</td>
+                                        </tr>
+                                        <tr class="border-b">
+                                            <td class="p-2">created_at</td>
+                                            <td class="p-2">TIMESTAMP</td>
+                                            <td class="p-2">Account creation date</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-sql">-- Create the voters table
+CREATE TABLE voters (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    local_government VARCHAR(50) NOT NULL,
+    relationship_status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Upgrade the users table (if coming from JSON)
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create an admin user
+INSERT INTO users (username, password, is_admin)
+VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMy.MqrqL3LmbrE.YP7yR7XkWHCGF9UOHqO', TRUE);
+-- Password: admin123 (hashed with bcrypt)</code></pre>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <h4 class="font-bold text-yellow-800 mb-2">🔍 Database Design Tips</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><span class="font-semibold">Primary Keys</span> - Every table needs a unique identifier (id)</li>
+                            <li><span class="font-semibold">Data Types</span> - Choose appropriate types for each field</li>
+                            <li><span class="font-semibold">NOT NULL</span> - Mark required fields that can't be empty</li>
+                            <li><span class="font-semibold">Default Values</span> - Set sensible defaults where appropriate</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Backend Integration -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-4">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 3: Backend Database Connection</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">Now we'll modify our Express backend to connect to MySQL instead of using the users.json file.</p>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-bash"># Install MySQL package for Node.js
+npm install mysql2</code></pre>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Database Configuration</h3>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-javascript">// config/db.js
+const mysql = require('mysql2/promise');
+require('dotenv').config();
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'voter_admin',
+  password: process.env.DB_PASSWORD || 'securepassword123',
+  database: process.env.DB_NAME || 'voter_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+module.exports = pool;</code></pre>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                        <h4 class="font-bold text-blue-800 mb-2">Update your .env file:</h4>
+                        <div class="bg-gray-800 rounded-md p-3">
+                            <pre class="text-green-400 text-sm"><code class="language-bash">DB_HOST=localhost
+DB_USER=voter_admin
+DB_PASSWORD=securepassword123
+DB_NAME=voter_db
+JWT_SECRET=your_secret_key
+PORT=5000</code></pre>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Updating Auth Endpoints</h3>
+                    
+                    <div class="flex border-b mb-4">
+                        <button class="tab-button active px-4 py-2 rounded-t-lg" onclick="openTab('register-endpoint')">Register</button>
+                        <button class="tab-button px-4 py-2 rounded-t-lg" onclick="openTab('login-endpoint')">Login</button>
+                        <button class="tab-button px-4 py-2 rounded-t-lg" onclick="openTab('voter-endpoint')">Voter CRUD</button>
+                    </div>
+                    
+                    <!-- Register Endpoint -->
+                    <div id="register-endpoint" class="tab-content">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// Updated register endpoint
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+  
+  try {
+    // Check if user exists
+    const [users] = await pool.query(
+      'SELECT * FROM users WHERE username = ?', 
+      [username]
+    );
+    
+    if (users.length > 0) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Hash password and create user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+      'INSERT INTO users (username, password) VALUES (?, ?)',
+      [username, hashedPassword]
+    );
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Registration failed' });
+  }
+});</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Login Endpoint -->
+                    <div id="login-endpoint" class="tab-content" style="display:none">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// Updated login endpoint
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  try {
+    // Find user
+    const [users] = await pool.query(
+      'SELECT * FROM users WHERE username = ?',
+      [username]
+    );
+    
+    if (users.length === 0) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const user = users[0];
+    const validPassword = await bcrypt.compare(password, user.password);
+    
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Create token with user info
+    const token = jwt.sign(
+      { id: user.id, username: user.username, isAdmin: user.is_admin },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Login failed' });
+  }
+});</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Voter CRUD -->
+                    <div id="voter-endpoint" class="tab-content" style="display:none">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// Voter CRUD endpoints
+
+// Create voter
+app.post('/voters', authenticate, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+
+  const { name, age, local_government, relationship_status } = req.body;
+  
+  try {
+    await pool.query(
+      `INSERT INTO voters 
+       (name, age, local_government, relationship_status)
+       VALUES (?, ?, ?, ?)`,
+      [name, age, local_government, relationship_status]
+    );
+    
+    res.status(201).json({ message: 'Voter added successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to add voter' });
+  }
+});
+
+// Get all voters
+app.get('/voters', authenticate, async (req, res) => {
+  try {
+    const [voters] = await pool.query('SELECT * FROM voters');
+    res.json(voters);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch voters' });
+  }
+});
+
+// Middleware to authenticate and authorize
+function authenticate(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: 'Token missing' });
+
+  const token = authHeader.split(' ')[1];
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <h4 class="font-bold text-yellow-800 mb-2">🔐 Security Improvements</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Added admin check for voter creation</li>
+                            <li>Included user role in JWT token</li>
+                            <li>Using parameterized queries to prevent SQL injection</li>
+                            <li>Proper error handling for database operations</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 5: Frontend Updates -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-5">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 4: Frontend Voter Management</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">Now we'll update our React frontend to handle voter data collection and display.</p>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Voter Registration Form</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-800 rounded-md p-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// src/pages/VoterRegister.js
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
+
+function VoterRegister() {
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    local_government: '',
+    relationship_status: 'Single'
+  });
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    try {
+      await api.post('/voters', formData);
+      setSuccess('Voter registered successfully!');
+      setFormData({
+        name: '',
+        age: '',
+        local_government: '',
+        relationship_status: 'Single'
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    }
+  };
+
+  return (
+    &lt;div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow"&gt;
+      &lt;h2 className="text-2xl font-bold mb-6"&gt;Register Voter&lt;/h2&gt;
+      {error && &lt;div className="bg-red-100 p-3 mb-4 rounded"&gt;{error}&lt;/div&gt;}
+      {success && &lt;div className="bg-green-100 p-3 mb-4 rounded"&gt;{success}&lt;/div&gt;}
+      
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;div className="mb-4"&gt;
+          &lt;label className="block mb-2"&gt;Full Name&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          /&gt;
+        &lt;/div&gt;
+        
+        &lt;div className="mb-4"&gt;
+          &lt;label className="block mb-2"&gt;Age&lt;/label&gt;
+          &lt;input
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            min="18"
+            required
+          /&gt;
+        &lt;/div&gt;
+        
+        &lt;div className="mb-4"&gt;
+          &lt;label className="block mb-2"&gt;Local Government&lt;/label&gt;
+          &lt;input
+            type="text"
+            name="local_government"
+            value={formData.local_government}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          /&gt;
+        &lt;/div&gt;
+        
+        &lt;div className="mb-6"&gt;
+          &lt;label className="block mb-2"&gt;Relationship Status&lt;/label&gt;
+          &lt;select
+            name="relationship_status"
+            value={formData.relationship_status}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          &gt;
+            &lt;option value="Single"&gt;Single&lt;/option&gt;
+            &lt;option value="Married"&gt;Married&lt;/option&gt;
+            &lt;option value="Divorced"&gt;Divorced&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+        
+        &lt;button
+          type="submit"
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+        &gt;
+          Register Voter
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default VoterRegister;</code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2">Key Features:</h4>
+                            <ul class="list-disc list-inside space-y-2 mb-4">
+                                <li>Form validation for required fields</li>
+                                <li>Age restriction (minimum 18 years)</li>
+                                <li>Dropdown for relationship status</li>
+                                <li>Success/error feedback</li>
+                                <li>Form reset after successful submission</li>
+                            </ul>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-blue-800 mb-2">Route Protection</h4>
+                                <p class="text-blue-700">This page should be protected so only admins can access it. We'll handle this in the Admin Dashboard section.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Voter List Component</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-800 rounded-md p-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// src/components/VoterList.js
+import React, { useEffect, useState } from 'react';
+import api from '../utils/api';
+
+function VoterList() {
+  const [voters, setVoters] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchVoters = async () => {
+      try {
+        const response = await api.get('/voters');
+        setVoters(response.data);
+      } catch (err) {
+        setError('Failed to load voters');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVoters();
+  }, []);
+
+  if (loading) return &lt;div className="text-center py-8"&gt;Loading voters...&lt;/div&gt;;
+  if (error) return &lt;div className="text-red-500 text-center py-8"&gt;{error}&lt;/div&gt;;
+
+  return (
+    &lt;div className="overflow-x-auto"&gt;
+      &lt;table className="min-w-full bg-white"&gt;
+        &lt;thead&gt;
+          &lt;tr className="bg-gray-100"&gt;
+            &lt;th className="p-3 text-left"&gt;Name&lt;/th&gt;
+            &lt;th className="p-3 text-left"&gt;Age&lt;/th&gt;
+            &lt;th className="p-3 text-left"&gt;Local Government&lt;/th&gt;
+            &lt;th className="p-3 text-left"&gt;Status&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {voters.map((voter) => (
+            &lt;tr key={voter.id} className="border-b"&gt;
+              &lt;td className="p-3"&gt;{voter.name}&lt;/td&gt;
+              &lt;td className="p-3"&gt;{voter.age}&lt;/td&gt;
+              &lt;td className="p-3"&gt;{voter.local_government}&lt;/td&gt;
+              &lt;td className="p-3"&gt;{voter.relationship_status}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default VoterList;</code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2">Component Features:</h4>
+                            <ul class="list-disc list-inside space-y-2 mb-4">
+                                <li>Fetches voter data on component mount</li>
+                                <li>Handles loading and error states</li>
+                                <li>Displays data in a responsive table</li>
+                                <li>Can be reused in different views</li>
+                            </ul>
+                            <div class="bg-purple-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-purple-800 mb-2">Next Steps</h4>
+                                <p class="text-purple-700">We'll add pagination, sorting, and search functionality in the Admin Dashboard section.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 6: Admin Dashboard -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 5: Building the Admin Dashboard</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">The admin dashboard will be the control center for managing voter data. Only users with admin privileges can access these features.</p>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Admin Dashboard Layout</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-800 rounded-md p-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// src/pages/AdminDashboard.js
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import VoterList from '../components/VoterList';
+import VoterRegister from './VoterRegister';
+
+function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState('voters');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  return (
+    &lt;div className="container mx-auto px-4 py-8"&gt;
+      &lt;div className="flex justify-between items-center mb-8"&gt;
+        &lt;h1 className="text-2xl font-bold"&gt;Admin Dashboard&lt;/h1&gt;
+        &lt;button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-4 py-2 rounded"
+        &gt;
+          Logout
+        &lt;/button&gt;
+      &lt;/div&gt;
+      
+      &lt;div className="flex border-b mb-6"&gt;
+        &lt;button
+          className={`px-4 py-2 ${activeTab === 'voters' ? 'border-b-2 border-blue-600' : ''}`}
+          onClick={() => setActiveTab('voters')}
+        &gt;
+          Voter List
+        &lt;/button&gt;
+        &lt;button
+          className={`px-4 py-2 ${activeTab === 'register' ? 'border-b-2 border-blue-600' : ''}`}
+          onClick={() => setActiveTab('register')}
+        &gt;
+          Register Voter
+        &lt;/button&gt;
+      &lt;/div&gt;
+      
+      {activeTab === 'voters' && &lt;VoterList /&gt;}
+      {activeTab === 'register' && &lt;VoterRegister /&gt;}
+    &lt;/div&gt;
+  );
+}
+
+export default AdminDashboard;</code></pre>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2">Dashboard Features:</h4>
+                            <ul class="list-disc list-inside space-y-2 mb-4">
+                                <li>Tab-based navigation between views</li>
+                                <li>Reuses the VoterList and VoterRegister components</li>
+                                <li>Admin-only access control</li>
+                                <li>Clean, organized layout</li>
+                            </ul>
+                            <div class="bg-yellow-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-yellow-800 mb-2">Admin Protection</h4>
+                                <p class="text-yellow-700">We need to verify the user is an admin before showing this dashboard.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Admin Route Protection</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-800 rounded-md p-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// src/utils/AdminRoute.js
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+
+function AdminRoute({ children }) {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+
+  try {
+    const decoded = JSON.parse(atob(token.split('.')[1]));
+    if (!decoded.isAdmin) {
+      return &lt;Navigate to="/" replace /&gt;;
+    }
+    return children;
+  } catch (err) {
+    return &lt;Navigate to="/login" replace /&gt;;
+  }
+}
+
+export default AdminRoute;</code></pre>
+                        </div>
+                        <div class="bg-gray-800 rounded-md p-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// Updated App.js routes
+import AdminRoute from './utils/AdminRoute';
+import AdminDashboard from './pages/AdminDashboard';
+
+// In your Routes component:
+&lt;Route
+  path="/admin"
+  element={
+    &lt;AdminRoute&gt;
+      &lt;AdminDashboard /&gt;
+    &lt;/AdminRoute&gt;
+  }
+/&gt;</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">How Admin Verification Works</h4>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>Check for token existence</li>
+                            <li>Decode the JWT token (without verification)</li>
+                            <li>Check the isAdmin flag in the token payload</li>
+                            <li>Redirect if not admin or no token</li>
+                            <li>Backend also verifies admin status for critical operations</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 7: Testing -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-7">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 6: Testing the System</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">Let's verify all the functionality works as expected before deployment.</p>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Testing Checklist</h3>
+                    
+                    <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white p-4 rounded border">
+                                <h4 class="font-bold mb-2">✅ Authentication</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Admin login with correct credentials</li>
+                                    <li>Regular user login</li>
+                                    <li>Invalid login attempts</li>
+                                    <li>Token expiration</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-4 rounded border">
+                                <h4 class="font-bold mb-2">✅ Authorization</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Admin access to dashboard</li>
+                                    <li>Regular user blocked from admin areas</li>
+                                    <li>Protected API endpoints</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-4 rounded border">
+                                <h4 class="font-bold mb-2">✅ Voter CRUD</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Add new voter records</li>
+                                    <li>View voter list</li>
+                                    <li>Form validation</li>
+                                    <li>Required fields</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white p-4 rounded border">
+                                <h4 class="font-bold mb-2">✅ Database</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Data persistence</li>
+                                    <li>Data integrity</li>
+                                    <li>Relationship constraints</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Test Admin Account</h3>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                        <p class="text-yellow-700">Use these credentials to test admin functionality:</p>
+                        <div class="mt-2">
+                            <p><span class="font-semibold">Username:</span> admin</p>
+                            <p><span class="font-semibold">Password:</span> admin123</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Sample Voter Data</h3>
+                    
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full bg-white border">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="p-2 border">Name</th>
+                                    <th class="p-2 border">Age</th>
+                                    <th class="p-2 border">Local Government</th>
+                                    <th class="p-2 border">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border">Adebayo Johnson</td>
+                                    <td class="p-2 border">32</td>
+                                    <td class="p-2 border">Ikeja</td>
+                                    <td class="p-2 border">Married</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border">Chioma Eze</td>
+                                    <td class="p-2 border">25</td>
+                                    <td class="p-2 border">Surulere</td>
+                                    <td class="p-2 border">Single</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border">Emeka Okafor</td>
+                                    <td class="p-2 border">45</td>
+                                    <td class="p-2 border">Lagos Island</td>
+                                    <td class="p-2 border">Divorced</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                        <h4 class="font-bold text-green-800 mb-2">Database Verification</h4>
+                        <p class="text-green-700">Check your MySQL database directly to confirm data is being stored correctly:</p>
+                        <div class="bg-gray-800 rounded-md p-3 mt-2">
+                            <pre class="text-green-400 text-sm"><code class="language-sql">-- Log in to MySQL
+mysql -u voter_admin -p
+
+-- Select the database
+USE voter_db;
+
+-- View voters table
+SELECT * FROM voters;
+
+-- View users table
+SELECT id, username, is_admin FROM users;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 8: Deployment & Next Steps -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 7: Deployment & Next Steps</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-6">Congratulations! Your full-stack voter management system is ready for deployment.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-green-50 p-5 rounded-lg border border-green-200 flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-green-800 mb-2">MySQL Database</h3>
+                                <p class="text-green-700">Properly structured voter data storage</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-lg border border-blue-200 flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 mb-2">Secure Authentication</h3>
+                                <p class="text-blue-700">JWT tokens with admin privileges</p>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 p-5 rounded-lg border border-purple-200 flex items-start">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-purple-800 mb-2">Voter Management</h3>
+                                <p class="text-purple-700">CRUD operations for voter records</p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-200 flex items-start">
+                            <div class="bg-yellow-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-yellow-800 mb-2">Admin Dashboard</h3>
+                                <p class="text-yellow-700">Protected interface for data management</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Deployment Options</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded border">
+                            <h4 class="font-bold mb-2">Frontend (React)</h4>
+                            <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                <li>Vercel (recommended)</li>
+                                <li>Netlify</li>
+                                <li>Firebase Hosting</li>
+                                <li>GitHub Pages</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-4 rounded border">
+                            <h4 class="font-bold mb-2">Backend (Node.js + MySQL)</h4>
+                            <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                <li>Render (with MySQL add-on)</li>
+                                <li>Railway</li>
+                                <li>AWS Elastic Beanstalk + RDS</li>
+                                <li>DigitalOcean Droplet</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Recommended Enhancements</h3>
+                    
+                    <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold mb-2">🔒 Security</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Password reset functionality</li>
+                                    <li>Two-factor authentication</li>
+                                    <li>Login attempt rate limiting</li>
+                                    <li>HTTPS enforcement</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">📊 Features</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Voter search and filtering</li>
+                                    <li>Data export (CSV, Excel)</li>
+                                    <li>Dashboard analytics</li>
+                                    <li>Bulk voter import</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">🧪 Testing</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Unit tests for API endpoints</li>
+                                    <li>Integration tests</li>
+                                    <li>End-to-end testing</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2">🚀 Performance</h4>
+                                <ul class="list-disc list-inside text-sm space-y-1 pl-4">
+                                    <li>Database indexing</li>
+                                    <li>API response caching</li>
+                                    <li>Frontend lazy loading</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">📚 Learning Resources</h4>
+                        <ul class="list-disc list-inside space-y-2 pl-4">
+                            <li>MySQL documentation for advanced queries</li>
+                            <li>React performance optimization</li>
+                            <li>Node.js security best practices</li>
+                            <li>Database normalization techniques</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="restartCourse()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">
+                        Complete Course 🎉
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <script>
+        // Current slide tracking
+        let currentSlide = 1;
+        const totalSlides = 8;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Update step indicators
+            for (let i = 1; i <= 5; i++) {
+                const indicator = document.getElementById(`step-${i}-indicator`);
+                if (i <= Math.ceil(currentSlide / 1.6)) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('bg-gray-100');
+                } else {
+                    indicator.classList.remove('completed');
+                    indicator.classList.add('bg-gray-100');
+                }
+            }
+        }
+        
+        // Navigation functions
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+                currentSlide++;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+                updateProgress();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+                currentSlide--;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+                updateProgress();
+            }
+        }
+        
+        function restartCourse() {
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+            currentSlide = 1;
+            document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+            updateProgress();
+        }
+        
+        // Toggle code explanations
+        function toggleExplanation(id) {
+            const explanation = document.getElementById(id);
+            explanation.classList.toggle('code-explanation');
+            explanation.classList.toggle('block');
+        }
+        
+        // Tab functionality
+        function openTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = 'none';
+            }
+            
+            // Remove active class from all buttons
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Show current tab and mark button as active
+            document.getElementById(tabName).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.querySelector('code');
+            const range = document.createRange();
+            range.selectNode(codeBlock);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            
+            // Visual feedback
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+        
+        // Initialize
+        updateProgress();
+        document.querySelector('.tab-button').click(); // Activate first tab
+        AOS.init();
+
+    </script>
+</body>
+</html>

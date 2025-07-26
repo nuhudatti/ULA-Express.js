@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner With Us | ULA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00C896;
+      --secondary: #5E2BFF;
+      --dark: #0F172A;
+      --light: #F8FAFC;
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+    }
+    
+    .dark body {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(0,200,150,0.1) 0%, rgba(94,43,255,0.1) 100%);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .form-focus:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 200, 150, 0.2);
+    }
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+</head>
+<body class="dark:bg-gray-900 dark:text-white transition-colors duration-300">
+  <!-- Success Modal (hidden by default) -->
+  <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="glass p-8 rounded-2xl max-w-md w-full mx-4 text-center">
+      <div class="w-20 h-20 mx-auto rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-500 mb-6">
+        <i class="fas fa-check text-3xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold mb-4">Thank You!</h3>
+      <p class="mb-6">Your partnership request has been received. Our team will contact you shortly.</p>
+      <button onclick="closeModal()" class="px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold hover:shadow-lg transition">
+        Return to 5IRE
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <section class="min-h-screen flex items-center justify-center px-6 py-12">
+    <div class="max-w-md w-full glass p-8 rounded-2xl">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white mb-4">
+          <i class="fas fa-handshake text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">Join the 5IRE Movement</h2>
+        <p class="text-gray-600 dark:text-gray-300">Partner with us to shape the future of African education</p>
+      </div>
+      
+      <form id="partnerForm" action="https://formspree.io/f/mgvzwyjj" method="POST" class="space-y-6">
+        <div>
+          <label for="name" class="block text-sm font-medium mb-2">Full Name</label>
+          <input type="text" id="name" name="name" required 
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        </div>
+        
+        <div>
+          <label for="email" class="block text-sm font-medium mb-2">Email Address</label>
+          <input type="email" id="email" name="email" required 
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        </div>
+        
+        <div>
+          <label for="country" class="block text-sm font-medium mb-2">Country</label>
+          <input type="text" id="country" name="country" required 
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        </div>
+        
+        <div>
+          <label for="institution" class="block text-sm font-medium mb-2">Institution/Organization</label>
+          <input type="text" id="institution" name="institution" required 
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        </div>
+        
+        <div>
+          <label for="role" class="block text-sm font-medium mb-2">Your Role</label>
+          <select id="role" name="role" required 
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+            <option value="" disabled selected>Select your role</option>
+            <option value="Student">Student</option>
+            <option value="Educator">Educator</option>
+            <option value="Developer">Developer</option>
+            <option value="Visionary">Visionary</option>
+            <option value="Organization Leader">Organization Leader</option>
+            <option value="Government Official">Government Official</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+        <label for="phone" class="block text-sm font-medium mb-2">Phone Number</label>
+        <div class="flex">
+            <select name="countryCode" id="countryCode" required 
+                    class="rounded-l-lg px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm form-focus">
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+254">🇰🇪 +254</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+237">🇨🇲 +237</option>
+            <option value="+213">🇩🇿 +213</option>
+            <option value="+971">🇦🇪 +971</option>
+            <!-- Add more as needed -->
+            </select>
+            <input type="tel" id="phone" name="phone" required 
+                placeholder="8012345678"
+                class="w-full rounded-r-lg px-4 py-3 border-t border-r border-b border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        </div>
+        </div>
+
+        <label for="interest" class="block text-sm font-medium mb-2">Why are you interested in ULA?</label>
+        <select name="interest" id="interest" required
+                class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+        <option value="" disabled selected>Select a reason</option>
+        <option value="Learn">To Learn</option>
+        <option value="Teach">To Teach</option>
+        <option value="Partner">To Partner</option>
+        <option value="Invest">To Support/Invest</option>
+        <option value="Other">Other</option>
+        </select>
+
+        <label for="linkedin" class="block text-sm font-medium mb-2">LinkedIn / Website (optional)</label>
+       <input type="url" id="linkedin" name="linkedin"
+       placeholder="https://linkedin.com/in/yourname"
+       class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition">
+
+       <label for="message" class="block text-sm font-medium mb-2">Message (optional)</label>
+        <textarea id="message" name="message" rows="3" maxlength="300"
+          placeholder="Let us know anything important..."
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 form-focus transition"></textarea>
+
+
+
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+       We’re reviewing applications to ensure ULA stays mission-aligned. You’ll hear back within <strong>7 days</strong>.
+        </p>
+
+        <div>
+          <button type="submit" class="w-full px-6 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold hover:shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i> Join the Movement
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+   <a href="../index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back To Home
+    </div>
+    </a>
+
+
+  <script>
+    // Handle form submission
+    document.getElementById('partnerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          // Show success modal
+          document.getElementById('successModal').classList.remove('hidden');
+          form.reset();
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        alert('There was a problem submitting your form. Please try again.');
+        console.error('Error:', error);
+      }
+    });
+    
+    // Close modal function
+    function closeModal() {
+      document.getElementById('successModal').classList.add('hidden');
+      // Optional: Redirect back to main page after form submission
+      window.location.href = './index.html'; // Change to your desired return URL
+    }
+
+    AOS.init();
+
+  </script>
+</body>
+</html>

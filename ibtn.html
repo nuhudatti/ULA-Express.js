@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express.js Mastery | Legacy Learning Path</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #0f172a;
+            --green: #16a34a;
+            --blue: #2563eb;
+            --purple: #7e22ce;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(30,41,59,0.2) 0%, rgba(15,23,42,0) 70%);
+            z-index: -1;
+        }
+        
+        .gold-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .gold-text {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            color: #94a3b8;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .module-card {
+            background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        
+        .module-header {
+            padding: 2rem 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        
+        .module-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .module-number {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .module-content {
+            padding: 2rem;
+        }
+        
+        .module-description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .topics-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topics-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .topic-item {
+            padding: 0.7rem 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+        
+        .topic-icon {
+            color: var(--gold);
+            font-size: 0.9rem;
+        }
+        
+        .module-footer {
+            padding: 0 2rem 2rem;
+        }
+        
+        .module-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            text-align: center;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .module-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        .module-btn i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .module-btn:hover i {
+            transform: translateX(5px);
+        }
+        
+        .path-progress {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+        
+        .path-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            z-index: -1;
+        }
+        
+        .step {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin: 0 1.5rem;
+            position: relative;
+        }
+        
+        .step.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold);
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 100%;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            color: #94a3b8;
+        }
+        
+        .step.active .step-label {
+            color: var(--gold);
+            font-weight: 500;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 1.5rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .cta-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #0f172a;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                gap: 1.5rem;
+            }
+            
+            .path-progress {
+                flex-direction: column;
+                align-items: center;
+                gap: 3rem;
+            }
+            
+            .path-line {
+                width: 2px;
+                height: 100%;
+                left: 50%;
+                background: linear-gradient(transparent, var(--gold), transparent);
+            }
+            
+            .step {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-bg"></div>
+        <div class="container">
+            <div class="gold-badge">LEGACY LEARNING PATH</div>
+            <h1>Master <span class="gold-text">Express.js</span> and Forge Your Developer Legacy</h1>
+            <p class="subtitle">Transform from beginner to master through our proven learning path. Build real-world skills that stand the test of time.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Mastery Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Project Tracks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">97%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12k+</div>
+                    <div class="stat-label">Developers Trained</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="path-progress">
+        <div class="path-line"></div>
+        <div class="step active">
+            1
+            <div class="step-label">Authentication</div>
+        </div>
+        <div class="step">
+            2
+            <div class="step-label">Database</div>
+        </div>
+        <div class="step">
+            3
+            <div class="step-label">Certificate</div>
+        </div>
+    </div>
+    
+    <main class="container">
+        <div class="modules-grid">
+            <!-- Module 1: Authentication -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="module-title">Authentication Mastery</div>
+                    <div class="module-number">01</div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">Build secure authentication systems that protect your applications and users. Master the fundamentals of user security.</p>
+                    
+                    <div class="topics-title">
+                        <i class="fas fa-bookmark"></i>
+                        Key Topics
+                    </div>
+                    <ul class="topics-list">
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            JWT Authentication Implementation
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Secure Password Hashing Techniques
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Middleware Security Best Practices
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            User Session Management
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Role-Based Access Control
+                        </li>
+                    </ul>
+                </div>
+                <div class="module-footer">
+                    <a href="#" class="module-btn">
+                        Start Authentication Module <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Module 2: Database -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="module-title">Database Integration</div>
+                    <div class="module-number">02</div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">Master database connectivity and management to build robust, data-driven applications with MySQL integration.</p>
+                    
+                    <div class="topics-title">
+                        <i class="fas fa-bookmark"></i>
+                        Key Topics
+                    </div>
+                    <ul class="topics-list">
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            MySQL Database Connection Setup
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            User Schema Design & Implementation
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Secure Data Storage Practices
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            CRUD Operations with Express.js
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Database Migration Strategies
+                        </li>
+                    </ul>
+                </div>
+                <div class="module-footer">
+                    <a href="#" class="module-btn">
+                        Start Database Module <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Module 3: Certificate -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="module-title">Certificate Generation</div>
+                    <div class="module-number">03</div>
+                </div>
+                <div class="module-content">
+                    <p class="module-description">Create and issue professional certificates to validate achievements and showcase skills to the world.</p>
+                    
+                    <div class="topics-title">
+                        <i class="fas fa-bookmark"></i>
+                        Key Topics
+                    </div>
+                    <ul class="topics-list">
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Dynamic Certificate Generation
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            PDF Creation & Customization
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Secure Verification Systems
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Automated Email Delivery
+                        </li>
+                        <li class="topic-item">
+                            <i class="fas fa-check-circle topic-icon"></i>
+                            Certificate Validation Endpoints
+                        </li>
+                    </ul>
+                </div>
+                <div class="module-footer">
+                    <a href="#" class="module-btn">
+                        Start Certificate Module <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Build Your Developer Legacy?</h2>
+            <p>Join thousands of developers who have transformed their careers with our Express.js mastery path.</p>
+            <a href="#" class="cta-btn">Begin Your Journey Today</a>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 Express.js Mastery. All rights reserved. Forge your legacy.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Add hover effect to module cards
+        const cards = document.querySelectorAll('.module-card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px)';
+                card.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.4)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+                card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
+            });
+        });
+        
+        // Simulate progress through modules
+        const steps = document.querySelectorAll('.step');
+        let activeStep = 0;
+        
+        function updateProgress() {
+            steps.forEach((step, index) => {
+                if (index === activeStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            activeStep = (activeStep + 1) % steps.length;
+        }
+        
+        // Update progress every 3 seconds
+        setInterval(updateProgress, 3000);
+    </script>
+</body>
+</html>

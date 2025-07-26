@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ULA – Express Auth Course</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <style>
+      .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    </style>
+    <script>
+      window.onload = () => {
+        AOS.init();
+      };
+      function toggleExplanation(id) {
+        const explainer = document.getElementById(id);
+        explainer.classList.toggle('hidden');
+      }
+    </script>
+    <style>
+      pre {
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+        overflow-x: auto;
+      }
+       pre {
+    background-color: #1e293b; /* Slate-800 */
+    color: #f1f5f9;            /* Slate-100 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.6;
+  }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 px-6 py-12 dark:bg-gray-900 dark:text-white">
+    <div class="max-w-5xl mx-auto">
+      <header class="mb-12" data-aos="fade-down">
+        <h1 class="text-4xl font-bold">🛡️ Express.js Authentication – Full Legacy Course</h1>
+        <p class="mt-2 text-lg">Learn to build a production-ready authentication system using Express.js, bcrypt, JWT, and Postman. Master API security and user auth — the way tech giants do it. Let it echo in your future apps.</p>
+      </header>
+
+      <section class="space-y-12">
+        <div data-aos="fade-up">
+          <h2 class="text-2xl font-semibold">📌 Objective</h2>
+          <p>Build a secure login system using <strong>Express.js</strong> and <strong>JSON Web Tokens (JWT)</strong>. You’ll test each endpoint with <strong>Postman</strong> to simulate real-world API flows.</p>
+        </div>
+        <div data-aos="fade-up">
+          <h2 class="text-2xl font-semibold">📌 What You’ll Learn in this section</h2>
+          <ul class="list-disc list-inside mt-4 space-y-2">
+            <li>How to set up an Express.js server</li>
+            <li>How to hash passwords with bcrypt</li>
+            <li>How to generate and verify JWT tokens</li>
+            <li>How to test all endpoints securely using Postman</li>
+            <li>How to structure and secure your code like a professional</li>
+          </ul>
+
+          <pre><code>
+ula-auth-project/
+├── backend/
+│   ├── server.js               ← Main Express entry file
+│   ├── db.js                   ← Database connection (MySQL/MongoDB)
+│   ├── .env                    ← Environment variables (DB, JWT secret)
+│   ├── middleware/
+│   │   └── auth.js             ← JWT verification middleware
+│   ├── routes/
+│   │   ├── auth.js             ← /register & /login routes
+│   │   └── users.js            ← Protected routes for user data
+│   └── controllers/
+│       └── userController.js   ← Logic separated from route files
+├── frontend/
+│   └── index.html              ← (optional) or React app
+├── README.md                   ← Project overview & instructions
+</code></pre>
+
+        </div>
+
+        <div data-aos="fade-up" data-aos-delay="100">
+           <h2 class="text-2xl font-semibold">🛠️ Tasks</h2>
+          <h2 class="text-2xl font-semibold">🧱 1. Setup</h2>
+          <p>Initialize your Node.js app and install the needed libraries:</p>
+          <pre><code class="language-bash">npm init -y
+npm install express bcryptjs jsonwebtoken</code></pre>
+          <button onclick="toggleExplanation('code-explanation-1')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">💡 Explain This Code</button>
+          <div id="code-explanation-1" class="mt-4 p-4 bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 rounded hidden">
+            <p><strong>npm init -y</strong> sets up a basic Node.js project instantly without asking questions.</p>
+            <p><strong>npm install express bcryptjs jsonwebtoken</strong> installs the 3 libraries:</p>
+            <ul class="list-disc ml-6">
+              <li><strong>express</strong>: a fast Node.js web server framework.</li>
+              <li><strong>bcryptjs</strong>: used to encrypt (hash) passwords for security.</li>
+              <li><strong>jsonwebtoken</strong>: creates tokens so users can securely login and access protected routes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div data-aos="fade-up" data-aos-delay="200">
+          <h2 class="text-2xl font-semibold">🔐 2. Full Code (server.js)</h2>
+          <pre><code class="language-javascript">const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const app = express();
+
+app.use(express.json());
+
+const users = []; // In-memory user store
+const SECRET = 'supersecretjwtkey';
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+  users.push({ username, password: hashed });
+  res.status(201).json({ msg: 'User registered' });
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username);
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.status(401).json({ msg: 'Invalid credentials' });
+  }
+  const token = jwt.sign({ username }, SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));</code></pre>
+          <button onclick="toggleExplanation('code-explanation-2')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">💡 Explain This Code</button>
+          <div id="code-explanation-2" class="mt-4 p-4 bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 rounded hidden">
+            <p>This is the full backend logic:</p>
+            <ul class="list-disc ml-6">
+              <li><strong>express.json()</strong> allows the server to understand JSON from the frontend.</li>
+              <li><strong>users[]</strong> is a temporary user list (like a mini database).</li>
+              <li><strong>/register</strong>: gets user input, hashes the password, and saves it.</li>
+              <li><strong>/login</strong>: checks if the user exists and password matches. If yes, generates a token using jwt.</li>
+              <li><strong>jwt.sign()</strong> creates a signed token that proves user identity.</li>
+              <li><strong>app.listen()</strong> runs the server at port 5000 and waits for requests.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div data-aos="fade-up" data-aos-delay="300">
+  <h2 class="text-2xl font-semibold">📮 3. Postman Testing Guide (Step-by-Step)</h2>
+  <p class="mt-4 text-lg font-medium">You don't need to be a programmer. Just follow these exact steps to test your Register and Login system using Postman:</p>
+
+  <ol class="list-decimal list-inside space-y-6 mt-6">
+    <li>
+      <strong>Download Postman:</strong> 
+      <p class="mt-1">Visit <a href="https://www.postman.com/downloads/" class="text-blue-500 underline" target="_blank">postman.com/downloads</a> and install it on your system.</p>
+    </li>
+
+    <li>
+      <strong>Start your Express Server:</strong>
+      <pre><code class="language-bash">node server.js</code></pre>
+      <p>This runs your backend on <code>http://localhost:5000</code>.</p>
+    </li>
+
+    <li>
+      <strong>Register a User (POST Request):</strong>
+      <ul class="list-disc list-inside mt-2 ml-4">
+        <li>Open Postman and click <strong>+ New Tab</strong>.</li>
+        <li>Set method to <strong>POST</strong></li>
+        <li>Enter URL: <code>http://localhost:5000/register</code></li>
+        <li>Go to <strong>Body</strong> → Select <code>raw</code> → Set type to <code>JSON</code></li>
+        <li>Paste this:</li>
+      </ul>
+      <pre><code class="language-json">{
+  "username": "testuser",
+  "password": "mypassword"
+}</code></pre>
+      <p>Click <strong>Send</strong>. You should see <code>{ "msg": "User registered" }</code>.</p>
+    </li>
+
+    <li>
+      <strong>Login (POST Request):</strong>
+      <ul class="list-disc list-inside mt-2 ml-4">
+        <li>Repeat the same steps as Register.</li>
+        <li>URL: <code>http://localhost:5000/login</code></li>
+        <li>Body stays the same JSON:</li>
+      </ul>
+      <pre><code class="language-json">{
+  "username": "testuser",
+  "password": "mypassword"
+}</code></pre>
+      <p>You’ll get something like:</p>
+      <pre><code class="language-json">{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</code></pre>
+    </li>
+
+    <li>
+      <strong>Use the Token (Authorization):</strong>
+      <ul class="list-disc list-inside mt-2 ml-4">
+        <li>To test protected routes (like <code>/dashboard</code>), you need to prove you’re logged in.</li>
+        <li>Create a new tab in Postman. Choose <strong>GET</strong> (or POST, based on your API).</li>
+        <li>Enter the URL (e.g., <code>http://localhost:5000/protected</code>)</li>
+        <li>Go to the <strong>Authorization</strong> tab.</li>
+        <li>Set <code>Type</code> to <strong>Bearer Token</strong></li>
+        <li>Paste the token you got from login.</li>
+      </ul>
+      <p>Click <strong>Send</strong> and boom! You’re inside a protected route.</p>
+    </li>
+  </ol>
+
+  <button onclick="toggleExplanation('code-explanation-3')" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">💡 Why These Steps Matter</button>
+  <div id="code-explanation-3" class="mt-4 p-4 bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 rounded hidden">
+    <ul class="list-disc ml-6 space-y-2">
+      <li><strong>Postman</strong> helps you simulate how apps talk to your backend (like how Instagram logs you in).</li>
+      <li>Registering & logging in is how users get verified.</li>
+      <li><strong>JWT Tokens</strong> are like secret keys — once you have one, you're trusted.</li>
+      <li>Adding a token to your request is like showing your ID card before entering a VIP area 🔐.</li>
+      <li>Learning this flow = you can now build secure apps like Paystack, Google Auth, or Facebook login.</li>
+    </ul>
+  </div>
+</div>
+
+<div data-aos="fade-up" data-aos-delay="400">
+  <h2 class="text-2xl font-semibold">📘 4. Protected Routes (Security in Action)</h2>
+  <p class="mt-4">Now let’s protect your routes so only logged-in users with valid tokens can access them. This is what separates a real app from just a demo.</p>
+
+  <p class="mt-4">📦 Add this route to your <code>server.js</code>:</p>
+
+  <pre><code class="language-javascript">// Middleware to verify token
+function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.status(401).json({ msg: 'No token provided' });
+
+  jwt.verify(token, SECRET, (err, user) => {
+    if (err) return res.status(403).json({ msg: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+}
+
+// Protected route
+app.get('/protected', verifyToken, (req, res) => {
+  res.json({ msg: `Welcome ${req.user.username}, this is a protected route.` });
+});
+</code></pre>
+
+  <button onclick="toggleExplanation('code-explanation-4')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">💡 Explain This Code</button>
+  <div id="code-explanation-4" class="mt-4 p-4 bg-blue-100 dark:bg-blue-800 text-blue-900 dark:text-blue-100 rounded hidden">
+    <ul class="list-disc ml-6 space-y-2">
+      <li><strong>verifyToken()</strong> is a function that checks if you sent a valid JWT in your request header.</li>
+      <li><code>Authorization: Bearer your_token</code> → this must be in the header for access.</li>
+      <li>If the token is missing or invalid, the user gets blocked (401/403).</li>
+      <li>If valid, the server lets them through and <strong>req.user</strong> contains their info.</li>
+      <li>This is how Facebook, Google, and banks protect their pages. If you understand this, you're already 50% a backend engineer.</li>
+    </ul>
+  </div>
+</div>   
+
+<!-- Quiz-Section -->
+ <div class="mt-20 space-y-4" id="quiz-section">
+  <h2 class="text-2xl font-bold">🧪 6. Smart Quiz – Master the Auth System</h2>
+  <p class="text-gray-600 dark:text-gray-300">Click to begin. Each answer will guide you step-by-step. Just like having a live facilitator beside you.</p>
+
+  <!-- Quiz Questions -->
+  <!-- Question 1 -->
+  <div id="question-1" class="bg-white dark:bg-gray-800 rounded shadow">
+    <div class="px-6 py-4 font-semibold text-lg">1️⃣ Why do we hash passwords before saving them?</div>
+    <div class="px-6 pb-4">
+      <ul class="space-y-2">
+        <li><input type="radio" name="q1" value="a" onclick="nextQuestion(1)"> A. To compress and save space</li>
+        <li><input type="radio" name="q1" value="b" onclick="nextQuestion(1)"> B. To hide them from attackers ✅</li>
+        <li><input type="radio" name="q1" value="c" onclick="nextQuestion(1)"> C. To make login faster</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Question 2 -->
+  <div id="question-2" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+    <div class="px-6 py-4 font-semibold text-lg">2️⃣ What does a JWT token do?</div>
+    <div class="px-6 pb-4">
+      <ul class="space-y-2">
+        <li><input type="radio" name="q2" value="a" onclick="nextQuestion(2)"> A. Encrypt passwords</li>
+        <li><input type="radio" name="q2" value="b" onclick="nextQuestion(2)"> B. Prove user is authenticated ✅</li>
+        <li><input type="radio" name="q2" value="c" onclick="nextQuestion(2)"> C. Delete session</li>
+      </ul>
+    </div>
+  </div>
+
+    <!-- Question 3 -->
+<div id="question-3" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">4️⃣ What command is used to initialize a Node.js project?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q4" value="a" onclick="nextQuestion(3)"> A. node init</li>
+      <li><input type="radio" name="q4" value="b" onclick="nextQuestion(3)"> B. npm start</li>
+      <li><input type="radio" name="q4" value="c" onclick="nextQuestion(3)"> C. npm init ✅</li>
+    </ul>
+  </div>
+</div>
+
+  <!-- Question 4 -->
+<div id="question-4" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">4️⃣ What command is used to initialize a Node.js project?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q4" value="a" onclick="nextQuestion(4)"> A. node init</li>
+      <li><input type="radio" name="q4" value="b" onclick="nextQuestion(4)"> B. npm start</li>
+      <li><input type="radio" name="q4" value="c" onclick="nextQuestion(4)"> C. npm init ✅</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 5 -->
+<div id="question-5" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">5️⃣ What is the role of bcrypt in the system?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q5" value="a" onclick="nextQuestion(5)"> A. Hash passwords securely ✅</li>
+      <li><input type="radio" name="q5" value="b" onclick="nextQuestion(5)"> B. Store tokens</li>
+      <li><input type="radio" name="q5" value="c" onclick="nextQuestion(5)"> C. Create server routes</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 6 -->
+<div id="question-6" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">6️⃣ Why is `jsonwebtoken` (JWT) used?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q6" value="a" onclick="nextQuestion(6)"> A. To build user interfaces</li>
+      <li><input type="radio" name="q6" value="b" onclick="nextQuestion(6)"> B. To authenticate users ✅</li>
+      <li><input type="radio" name="q6" value="c" onclick="nextQuestion(6)"> C. To encrypt password data</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 7 -->
+<div id="question-7" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">7️⃣ What should you NEVER do with a JWT?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q7" value="a" onclick="nextQuestion(7)"> A. Store it in the Authorization header</li>
+      <li><input type="radio" name="q7" value="b" onclick="nextQuestion(7)"> B. Send it over HTTP without SSL ✅</li>
+      <li><input type="radio" name="q7" value="c" onclick="nextQuestion(7)"> C. Use it with Postman</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 8 -->
+<div id="question-8" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">8️⃣ What does `req.body` give you in Express?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q8" value="a" onclick="nextQuestion(8)"> A. The current file path</li>
+      <li><input type="radio" name="q8" value="b" onclick="nextQuestion(8)"> B. The data sent by the client ✅</li>
+      <li><input type="radio" name="q8" value="c" onclick="nextQuestion(8)"> C. The IP address</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 9 -->
+<div id="question-9" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">9️⃣ What’s a “middleware” in Express?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q9" value="a" onclick="nextQuestion(9)"> A. A security password</li>
+      <li><input type="radio" name="q9" value="b" onclick="nextQuestion(9)"> B. A function that runs before the final route ✅</li>
+      <li><input type="radio" name="q9" value="c" onclick="nextQuestion(9)"> C. A backend UI element</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 10 -->
+<div id="question-10" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">🔟 Why do we test APIs in Postman before frontend?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q10" value="a" onclick="nextQuestion(10)"> A. To see how it looks</li>
+      <li><input type="radio" name="q10" value="b" onclick="nextQuestion(10)"> B. To catch backend errors early ✅</li>
+      <li><input type="radio" name="q10" value="c" onclick="nextQuestion(10)"> C. To design better CSS</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 11 -->
+<div id="question-11" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">🔐 What happens if a user sends a fake token?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q11" value="a" onclick="nextQuestion(11)"> A. Access is denied ✅</li>
+      <li><input type="radio" name="q11" value="b" onclick="nextQuestion(11)"> B. They get admin privileges</li>
+      <li><input type="radio" name="q11" value="c" onclick="nextQuestion(11)"> C. The app logs them in</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Question 12 -->
+<div id="question-12" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+  <div class="px-6 py-4 font-semibold text-lg">🧱 What is the first step when building any Express project?</div>
+  <div class="px-6 pb-4">
+    <ul class="space-y-2">
+      <li><input type="radio" name="q12" value="a" onclick="nextQuestion(12, true)"> A. Protect routes</li>
+      <li><input type="radio" name="q12" value="b" onclick="nextQuestion(12, true)"> B. Build the database</li>
+      <li><input type="radio" name="q12" value="c" onclick="nextQuestion(12, true)"> C. Initialize and set up server ✅</li>
+    </ul>
+  </div>
+</div>
+
+
+  <!-- Question 15 -->
+  <div id="question-15" class="bg-white dark:bg-gray-800 rounded shadow hidden">
+    <div class="px-6 py-4 font-semibold text-lg">🔚 What is the first step when building any Express project?</div>
+    <div class="px-6 pb-4">
+      <ul class="space-y-2">
+        <li><input type="radio" name="q15" value="a" onclick="nextQuestion(15, true)"> A. Protect routes</li>
+        <li><input type="radio" name="q15" value="b" onclick="nextQuestion(15, true)"> B. Build the database</li>
+        <li><input type="radio" name="q15" value="c" onclick="nextQuestion(15, true)"> C. Initialize and set up server ✅</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div id="quiz-submit" class="hidden">
+    <button onclick="submitAccordionQuiz()" class="mt-6 px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition">✅ Submit Answers</button>
+    <div id="accordion-feedback" class="mt-4 text-lg font-semibold hidden"></div>
+  </div>
+</div>
+
+        <!-- <div data-aos="fade-up" data-aos-delay="300">
+          <a href="../certificate/backend_out.html"  class="bg-green-600 text-white m-100 px-6 py-3 rounded hover:bg-green-700 transition">📜 Generate Certificate</a>
+        </div> -->
+
+ <div data-aos="fade-up" data-aos-delay="400">
+          <h2 class="text-2xl font-semibold">📦 Next-Level Ideas</h2>
+          <ul class="list-disc list-inside mt-4 space-y-2">
+            <li>Use MySQL to persist users</li>
+            <li>Create a <code>/protected</code> route that only allows JWT-authenticated users</li>
+            <li>Build a full login/register UI with React, Next.js, or simple HTML</li>
+            <li>Deploy it on Render, Vercel, or Railway</li>
+          </ul>
+        </div>
+
+        <div data-aos="fade-up" data-aos-delay="300">
+          <h2 class="text-2xl font-semibold">💡 Tip:</h2>
+          <p>Always test APIs like real-world apps. Break them. Secure them. Understand them. That’s how backends become battle-tested.</p>
+        </div>
+
+        
+
+
+        <div class="mt-16 text-center" data-aos="fade-up" data-aos-delay="200">
+          <p class="text-xl font-bold">🧠 Great software doesn't begin with tech. It begins with clarity, consistency, and courage.</p>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">This page is part of the Lamborghini Legacy Curriculum by ULA.</p>
+        </div>
+      </section>
+    </div>
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <!-- JavaScript -->
+<script>
+  function nextQuestion(current, isLast = false) {
+    document.getElementById(`question-${current}`)?.classList.add('hidden');
+    if (isLast) {
+      document.getElementById("quiz-submit")?.classList.remove("hidden");
+      document.getElementById("quiz-submit")?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      const next = document.getElementById(`question-${current + 1}`);
+      next?.classList.remove('hidden');
+      next?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function submitAccordionQuiz() {
+    const answers = {
+      q1: 'b', q2: 'b', q3: 'c', q4: 'c', q5: 'a', q6: 'b',
+      q7: 'b', q8: 'b', q9: 'b', q10: 'b', q11: 'a', q12: 'c',
+      q13: 'b', q14: 'a', q15: 'c'
+    };
+    let score = 0;
+    for (let q in answers) {
+      const selected = document.querySelector(`input[name="${q}"]:checked`);
+      if (selected && selected.value === answers[q]) score++;
+    }
+    const feedback = document.getElementById('accordion-feedback');
+    feedback.innerText = `🎉 You got ${score}/15 correct. ${score === 15 ? "🚀 Outstanding! You're ready to build with courage, clarity, and legacy." : "✅ Good job! Review your weak spots and become unstoppable."}`;
+    feedback.classList.remove('hidden');
+  }
+
+  AOS.init();
+
+</script>
+
+  </body>
+</html>

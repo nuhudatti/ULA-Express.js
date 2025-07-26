@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="ULA Express.js Learning Path – Build Real Projects, Earn Certificates">
+<meta property="og:description" content="Master Express.js through 9 professional modules. Build full apps, explore guided projects, and generate your certificate instantly.">
+<meta property="og:image" content="https://yourdomain.com/img/ula-express-preview.jpg">
+<meta property="og:url" content="https://yourdomain.com/ula-express">
+
+<!-- Twitter Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ULA Express.js Learning Path – Build Real Projects, Earn Certificates">
+<meta name="twitter:description" content="Start your Express.js journey with ULA. Explore modules, complete projects, and earn your certificate.">
+<meta name="twitter:image" content="https://yourdomain.com/img/ula-express-preview.jpg">
+
+  <title>ULA – Unified Learning Archive | The Future of African Education</title>
+  <meta name="description" content="Africa's answer to global education evolution - bridging innovation, culture, and technology to empower future-ready minds across the world.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00C896;
+      --secondary: #5E2BFF;
+      --dark: #0F172A;
+      --light: #F8FAFC;
+      
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+      /* overflow-x: hidden;
+      max-width: 100%; */
+    }
+    
+    .dark .hero-gradient {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(0,200,150,0.1) 0%, rgba(94,43,255,0.1) 100%);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .typing::after {
+      content: '|';
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* step */
+
+    :root {
+            --gold:  #2563eb;
+            --dark: #0F172A;
+            --green: #16a34a;
+            --blue: #2563eb;
+            --purple: #7e22ce;
+        }
+      
+        
+        .gold-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .gold-text {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            color: #94a3b8;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        
+        .path-progress {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+        
+        .path-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            z-index: -1;
+        }
+        
+        .step {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--gold);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin: 0 1.5rem;
+            position: relative;
+        }
+        
+        .step.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold);
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 100%;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            color: #94a3b8;
+        }
+        
+        .step.active .step-label {
+            color: var(--gold);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                gap: 1.5rem;
+            }
+            
+            .path-progress {
+                flex-direction: column;
+                align-items: center;
+                gap: 3rem;
+            }
+            
+            .path-line {
+                width: 2px;
+                height: 100%;
+                left: 50%;
+                background: linear-gradient(transparent, var(--gold), transparent);
+            }
+            
+            .step {
+                margin: 0;
+            }
+        }
+
+  </style>
+</head>
+<body class="dark:bg-gray-900 dark:text-white transition-colors duration-300">
+  <!-- Navigation -->
+  <nav class="glass fixed w-full z-50 py-4 px-6 md:px-12">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold">ULA</div>
+        <span class="text-xl font-bold">Universal Learning Archive</span>
+      </div>
+      <div class="hidden md:flex space-x-8">
+        <a href="#vision" class="hover:text-green-500 transition">Vision</a>
+        <a href="#features" class="hover:text-green-500 transition">Features</a>
+        <a href="#impact" class="hover:text-green-500 transition">Impact</a>
+        <a href="#partners" class="hover:text-green-500 transition">Partners</a>
+      </div>
+      <!-- <button class="md:hidden text-2xl">
+        <i class="fas fa-bars"></i>
+      </button> -->
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen hero-gradient flex flex-col justify-center items-center text-center px-6 pt-24 pb-16">
+    <div class="max-w-4xl mx-auto">
+      <div class="inline-block px-4 py-2 mb-5 rounded-full bg-black/10 dark:bg-white/10 backdrop-blur-sm">
+        <span class="text-2xl font-medium">Backed by 5IRE & Asteria Alliance </span>
+      </div>
+      
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6">
+        <span class="text-gradient">Redefining Education</span><br>
+        <span class="typing">For The Next Billion Minds</span>
+      </h1>
+      
+      <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-5 opacity-90">
+        Africa's unified platform for transformative learning - where tradition meets innovation to create a legacy that will echo through eternity.
+      </p>
+      
+      <p class="text-sm font-medium mb-5"><span id="typed2" ></span></p>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="#learn" class="px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 pulse-animation">
+          Begin Your Legacy
+        </a>
+        <a href="#vision" class="px-8 py-4 rounded-full border-2 border-gray-300 dark:border-gray-600 font-semibold hover:bg-white/10 transition">
+          Explore The Vision
+        </a>
+      </div>
+      
+      <div class="mt-16 flex justify-center">
+        <a href="#vision" class="animate-bounce">
+          <i class="fas fa-chevron-down text-2xl opacity-70"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Authentication Mastery Section -->
+<section class="py-20 px-6 md:px-12 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 dark:bg-blue-100">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header with Icon -->
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-green-500 to-blue-500 mb-6">
+        <i class="fas fa-shield-alt text-3xl text-white"></i>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">
+        <span class="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600 dark:from-green-400 dark:to-blue-400">
+          Express.js Authentication Mastery
+        </span>
+      </h2>
+      <p class="text-xl max-w-3xl mx-auto opacity-90">
+        Build production-ready auth systems that will stand the test of time. Learn the exact patterns used by tech giants.
+      </p>
+    </div>
+
+    <!-- Course Overview Card -->
+    <div class="glass p-8 rounded-2xl shadow-xl mb-16 border border-gray-200 dark:border-gray-700">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-4 flex items-center">
+            <i class="fas fa-bullseye mr-3 text-green-500"></i> Course Objective
+          </h3>
+          <p class="mb-6 opacity-90">
+            Build a secure login system using Express.js, bcrypt, JWT, and Postman. Master API security and user authentication at professional level.
+          </p>
+          
+          <h3 class="text-2xl font-bold mb-4 flex items-center">
+            <i class="fas fa-graduation-cap mr-3 text-blue-500"></i> You'll Learn
+          </h3>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Express.js server setup with security best practices</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Password hashing with bcrypt and salting</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>JWT token generation, verification, and expiration</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Professional API testing with Postman</span> 
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Real Projects, Real Impact</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-2xl font-bold mb-4 flex items-center">
+            <i class="fas fa-folder-open mr-3 text-purple-500"></i> Project Structure
+          </h3>
+          <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+            <div class="text-gray-500">ula-auth-project/</div>
+            <div class="ml-4 text-gray-500">├── backend/</div>
+            <div class="ml-8">├── server.js <span class="text-gray-500">← Main Express entry</span></div>
+            <div class="ml-8">├── db.js <span class="text-gray-500">← Database connection</span></div>
+            <div class="ml-8">├── .env <span class="text-gray-500">← Environment config</span></div>
+            <div class="ml-8">├── middleware/</div>
+            <div class="ml-12">└── auth.js <span class="text-gray-500">← JWT middleware</span></div>
+            <div class="ml-8">├── routes/</div>
+            <div class="ml-12">├── auth.js <span class="text-gray-500">← Auth endpoints</span></div>
+            <div class="ml-12">└── users.js <span class="text-gray-500">← Protected routes</span></div>
+            <div class="ml-8">└── controllers/</div>
+            <div class="ml-12">└── userController.js <span class="text-gray-500">← Business logic</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Postman Testing Section -->
+    <!-- <div class="glass p-8 rounded-2xl mb-16">
+      <h3 class="text-3xl font-bold mb-6 flex items-center">
+        <i class="fas fa-mail-bulk text-blue-500 mr-4"></i>
+        Postman Testing Guide
+      </h3>
+      <p class="text-xl mb-8 max-w-3xl opacity-90">
+        Professional API testing workflow used by backend engineers at top tech companies.
+      </p>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+ 
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold mb-4">1</div>
+          <h4 class="font-bold mb-2">Register User</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Send POST request to /register with username and password</p>
+          <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs mb-3">
+            POST http://localhost:5000/register
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs">
+            { "username": "test", "password": "secure123" }
+          </div>
+        </div>
+        
+       
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+          <div class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 font-bold mb-4">2</div>
+          <h4 class="font-bold mb-2">Login User</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Send POST request to /login to receive JWT token</p>
+          <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs mb-3">
+            POST http://localhost:5000/login
+          </div>
+          <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs">
+            { "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+          </div>
+        </div>
+        
+        
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700" >
+          <div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold mb-4">3</div>
+          <h4 class="font-bold mb-2">Access Protected Route</h4>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Include token in Authorization header</p>
+          <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs mb-3" >
+            GET http://localhost:5000/protected
+          </div>
+          <div  class="bg-gray-100 dark:bg-gray-900 p-3 rounded font-mono text-xs">
+            Authorization: Bearer &lt;token&gt;
+          </div>
+        </div>
+      </div>
+    </div > -->
+    
+    <!-- Final CTA -->
+    <div class="text-center" id="learn" >
+      <div class="header-bg"></div>
+        
+      <h3 class="text-3xl md:text-4xl font-bold mb-6">Ready to Master Authentication?</h3>
+      <p class="text-lg md:text-xl mb-12 max-w-lg mx-auto">
+        Choose your path to begin crafting backend systems that will define your professional legacy
+      </p>
+      <div class="container">
+            <div class="gold-badge">LEGACY LEARNING PATH</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Mastery Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Project Tracks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">97%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12k+</div>
+                    <div class="stat-label">Developers Trained</div>
+                </div>
+            </div>
+        </div>
+      
+     
+    <div class="path-progress">
+        <div class="path-line"></div>
+        <div class="step active">
+            1
+            <div class="step-label">Authentication</div>
+        </div>
+        <div class="step">
+            2
+            <div class="step-label">Database</div>
+        </div>
+        <div class="step">
+            3
+            <div class="step-label">Certificate</div>
+        </div>
+    </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-7xl mx-auto px-4" >
+        
+  
+  <!-- Learning Path Button -->
+  <a href="./pages/index.html" class="w-full group bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-green-400 dark:hover:border-green-400 transition-all hover:shadow-lg">
+    <div class="w-16 h-16 mx-auto rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 mb-6 group-hover:bg-green-200 dark:group-hover:bg-green-800/30 transition">
+      <i class="fas fa-graduation-cap text-2xl"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-3 text-center">Learning Path</h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center">Master Express.js through 9 professional modules</p>
+    <div class="inline-flex items-center justify-center text-green-600 dark:text-green-400 font-medium group-hover:text-green-800 dark:group-hover:text-green-300 transition w-full">
+      Explore Modules <i class="fas fa-arrow-right ml-2"></i>
+    </div>
+  </a>
+
+  <!-- Project Tracks Button -->
+  <a href="./Project Track/index.html" class="w-full group bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-400 transition-all hover:shadow-lg">
+    <div class="w-16 h-16 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/30 transition">
+      <i class="fas fa-laptop-code text-2xl"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-3 text-center">Project Tracks</h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center">Build complete applications with guided projects</p>
+    <div class="inline-flex items-center justify-center text-blue-600 dark:text-blue-400 font-medium group-hover:text-blue-800 dark:group-hover:text-blue-300 transition w-full">
+      View Projects <i class="fas fa-arrow-right ml-2"></i>
+    </div>
+  </a>
+
+  <!-- Certificate Generator Button -->
+  <a href="./certificate/backend_out.html" class="w-full group bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-green-400 dark:hover:border-green-400 transition-all hover:shadow-lg">
+    <div class="w-16 h-16 mx-auto rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 mb-6 group-hover:bg-green-200 dark:group-hover:bg-green-800/30 transition">
+      <i class="fas fa-certificate text-2xl"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-3 text-center">Certificate Generator</h2>
+    <p class="text-gray-600 dark:text-gray-300 mb-4 text-center">Easily generate and download course completion certificates</p>
+    <div class="inline-flex items-center justify-center text-green-600 dark:text-green-400 font-medium group-hover:text-green-800 dark:group-hover:text-green-300 transition w-full">
+      Generate Now <i class="fas fa-arrow-right ml-2"></i>
+    </div>
+  </a>
+
+</div>
+
+ 
+
+  <!-- Learning path -->
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        
+    </style>
+
+    <script>
+        // Add hover effect to module cards
+      
+        // Simulate progress through modules
+        const steps = document.querySelectorAll('.step');
+        let activeStep = 0;
+        
+        function updateProgress() {
+            steps.forEach((step, index) => {
+                if (index === activeStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            activeStep = (activeStep + 1) % steps.length;
+        }
+        
+        // Update progress every 3 seconds
+        setInterval(updateProgress, 1000);
+    </script>
+
+
+
+
+
+</section>
+  <!-- Vision Section -->
+  <section id="vision" class="py-20 px-6 md:px-12 bg-white dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <span class="text-gradient">The ULA Vision</span>
+        </h2>
+        <p class="text-xl max-w-3xl mx-auto opacity-90">
+          We're not just building another learning platform. We're creating an educational legacy that will transform Africa and inspire the world.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mb-6">
+            <i class="fas fa-globe-africa text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Pan-African Unity</h3>
+          <p class="opacity-80">Bridging 54 nations through a shared digital learning ecosystem that celebrates our diversity while forging common purpose.</p>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mb-6">
+            <i class="fas fa-brain text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Cognitive Revolution</h3>
+          <p class="opacity-80">Harnessing neuroplasticity and adaptive learning to unlock the full potential of every African mind.</p>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mb-6">
+            <i class="fas fa-infinity text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Eternal Impact</h3>
+          <p class="opacity-80">Designing systems that will continue to educate and inspire generations long after we're gone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 px-6 md:px-12 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <span class="text-gradient">Architectural Marvels</span>
+        </h2>
+        <p class="text-xl max-w-3xl mx-auto opacity-90">
+          Technological innovations that will make even Silicon Valley pause and take notice.
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-12">
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-start mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white mr-6">
+              <i class="fas fa-project-diagram text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Decentralized Knowledge Graph</h3>
+              <p class="opacity-80">A self-evolving network of interconnected concepts that adapts to each learner's cognitive patterns.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-start mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white mr-6">
+              <i class="fas fa-robot text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Neuro-Adaptive AI</h3>
+              <p class="opacity-80">Machine learning models that understand your brain's unique wiring and optimize content delivery accordingly.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-start mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-500 to-red-500 flex items-center justify-center text-white mr-6">
+              <i class="fas fa-vr-cardboard text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Immersive Learning Pods</h3>
+              <p class="opacity-80">Virtual environments where historical events, scientific concepts, and cultural traditions come alive.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-start mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white mr-6">
+              <i class="fas fa-dna text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold mb-2">Generational Memory</h3>
+              <p class="opacity-80">A blockchain-based archive that preserves and builds upon each generation's collective wisdom.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Section -->
+  <section id="impact" class="py-20 px-6 md:px-12 bg-white dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <span class="text-gradient">The Ripple Effect</span>
+        </h2>
+        <p class="text-xl max-w-3xl mx-auto opacity-90">
+          How ULA will create waves of change that extend far beyond education
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-12 gap-8 items-center mb-16">
+        <div class="md:col-span-5">
+          <div class="glass p-8 rounded-2xl">
+            <h3 class="text-2xl font-bold mb-4">Economic Renaissance</h3>
+            <p class="mb-6 opacity-80">By 2040, ULA will have contributed to creating Africa's first trillion-dollar digital economy powered by educated minds.</p>
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 mr-4">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xl">47M+</p>
+                <p class="text-sm opacity-70">High-value jobs created</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="md:col-span-7">
+          <div class="glass p-8 rounded-2xl h-full">
+            <div class="aspect-w-16 aspect-h-9 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+              Economic Impact Visualization
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-7 order-1 md:order-2">
+          <div class="glass p-8 rounded-2xl h-full">
+            <div class="aspect-w-16 aspect-h-9 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
+              Cultural Preservation Visualization
+            </div>
+          </div>
+        </div>
+        <div class="md:col-span-5 order-2 md:order-1">
+          <div class="glass p-8 rounded-2xl">
+            <h3 class="text-2xl font-bold mb-4">Cultural Time Capsule</h3>
+            <p class="mb-6 opacity-80">Preserving over 3,000 African languages and cultural traditions through immersive digital experiences.</p>
+            <div class="flex items-center">
+              <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-500 mr-4">
+                <i class="fas fa-landmark"></i>
+              </div>
+              <div>
+                <p class="font-bold text-xl">100%</p>
+                <p class="text-sm opacity-70">Of African cultures preserved</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+   
+
+  <!-- Partners Section -->
+  <section id="partners" class="py-20 px-6 md:px-12 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <span class="text-gradient">The Alliance</span>
+        </h2>
+        <p class="text-xl max-w-3xl mx-auto opacity-90">
+          Global visionaries who believe in our mission to redefine education for eternity
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+          <div class="glass p-6 rounded-xl text-center">
+            <img src="./img/datti3.jpg" alt="Intern" class="mx-auto mb-4 w-24 h-24 rounded-full shadow-md" />
+            <h3 class="text-xl font-semibold">Nuhu Muhammad Datti</h3>
+            <p class="text-sm text-yellow-600 dark:text-yellow-400">IBB University • Backend Intern @ Asteria Alliance</p>
+            <p class="mt-4 text-sm">"Being an intern at Asteria opened doors to innovation, architecture, and real engineering challenges. It’s a launchpad for greatness."</p>
+          </div>
+          <div class="glass p-6 rounded-xl text-center">
+            <img src="./img/elona.jpg" alt="Intern" class="mx-auto mb-4 w-24 h-24 rounded-full shadow-md" />
+            <h3 class="text-xl font-semibold">Fatima Muhammad Alkhali</h3>
+            <p class="text-sm text-yellow-600 dark:text-yellow-400">Global Education Strategist</p>
+            <p class="mt-4 text-sm">"Creating something timeless for Africa was not just a task, it was a calling. ULA is a symbol of united excellence."</p>
+          </div>
+          <div class="glass p-6 rounded-xl text-center">
+            <img src="./img/exeminer.jpg" alt="Intern" class="mx-auto mb-4 w-24 h-24 rounded-full shadow-md" />
+            <h3 class="text-xl font-semibold">Dr. Adamu</h3>
+            <p class="text-sm text-yellow-600 dark:text-yellow-400">Exam Officer, Department of Computer Science</p>
+            <p class="mt-4 text-sm">"For the first time, I see a framework that blends academic credibility with technological excellence. ULA has the potential to restore trust in education and assessment across the continent."</p>
+          </div>
+        </div>
+      
+      <div class="text-center">
+        <h3 class="text-2xl font-bold mb-6">Join The Movement</h3>
+        <p class="text-xl max-w-2xl mx-auto mb-8 opacity-90">
+          Be part of the educational revolution that will echo through eternity
+        </p>
+        <a href="./5ire vision/index.html" class="px-8 py-4 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 inline-block">
+          Partner With Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="py-20 px-6 md:px-12 bg-white dark:bg-gray-800">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+          <span class="text-gradient">Voices of The Future</span>
+        </h2>
+        <p class="text-xl max-w-3xl mx-auto opacity-90">
+          What global leaders say about ULA's potential to transform education
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-yellow-500 to-red-500 flex items-center justify-center text-white mr-4">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div>
+              <h4 class="font-bold">Director</h4>
+              <!-- <p class="text-sm opacity-70">NITDA Director</p> -->
+            </div>
+          </div>
+          <p class="italic opacity-90">"ULA represents the most comprehensive digital education framework I've encountered in my 20 years of policy work. This will redefine Africa's position in the global knowledge economy."</p>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white mr-4">
+              <i class="fas fa-user-astronaut"></i>
+            </div>
+            <div>
+              <h4 class="font-bold">Co-Founder</h4>
+              <!-- <p class="text-sm opacity-70">5IRE </p> -->
+            </div>
+          </div>
+          <p class="italic opacity-90">"When we first saw ULA's architecture, our entire engineering team stood in awe. This isn't just an African solution - it's the future of global education."</p>
+        </div>
+        
+        <div class="glass p-8 rounded-2xl card-hover">
+          <div class="flex items-center mb-6">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-teal-500 flex items-center justify-center text-white mr-4">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div>
+              <h4 class="font-bold">Tech Educator</h4>
+              <!-- <p class="text-sm opacity-70">Tech Educator</p> -->
+            </div>
+          </div>
+          <p class="italic opacity-90">"I've tested educational platforms worldwide. ULA's neuro-adaptive algorithms create learning experiences that feel almost telepathic in their precision."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-20 px-6 md:px-12 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Shape Eternity?</h2>
+      <p class="text-xl mb-10 opacity-90">
+        The Unified Learning Archive isn't just a platform - it's a movement that will outlive us all. Join the vanguard of Africa's educational renaissance.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="./email.html" class="px-8 py-4 rounded-full bg-white text-green-600 font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+          Apply for Early Access
+        </a>
+        <!-- <a href="#demo" class="px-8 py-4 rounded-full border-2 border-white font-semibold hover:bg-white/10 transition">
+          Request Demo
+        </a> -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-16 px-6 md:px-12">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-12 mb-12">
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold">ULA</div>
+            <span class="text-xl font-bold">Unified Learning Archive</span>
+          </div>
+          <p class="opacity-80">Building an educational legacy that will echo through eternity.</p>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Navigation</h4>
+          <ul class="space-y-3">
+            <li><a href="#vision" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Vision</a></li>
+            <li><a href="#features" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Features</a></li>
+            <li><a href="#impact" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Impact</a></li>
+            <li><a href="#partners" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Partners</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Resources</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">White Paper</a></li>
+            <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Research Papers</a></li>
+            <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Developer API</a></li>
+            <li><a href="#" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">Media Kit</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="text-lg font-bold mb-6">Connect</h4>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3 opacity-80"></i>
+              <a href="mailto:contact@ula-africa.org" class="opacity-80 hover:opacity-100 hover:text-green-400 transition">+234 808 844 0095</a>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-map-marker-alt mr-3 opacity-80"></i>
+              <span class="opacity-80">Lagos, Nigeria | Global</span>
+            </li>
+          </ul>
+          <div class="flex space-x-4 mt-6">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 transition">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-green-500 transition">
+              <i class="fab fa-github"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="opacity-80 mb-4 md:mb-0">© 2025 Unified Learning Archive. All rights reserved.</p>
+        <div class="flex space-x-6">
+          <a href="#" class="opacity-80 hover:opacity-100">Privacy Policy</a>
+          <a href="#" class="opacity-80 hover:opacity-100">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+   <!-- Home Button - Add to your education page template -->
+<a href="https://nuhudatti.github.io/ula-project-proposal/page_education/course.html" class="fixed bottom-6 left-6 z-40">
+  <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+    <span>Home Portal</span>
+  </button>
+</a>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+  <script>
+    // Simple dark mode toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const darkModeToggle = document.createElement('button');
+      darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      darkModeToggle.className = 'fixed bottom-6 right-6 w-12 h-12 rounded-full glass flex items-center justify-center text-xl z-50';
+      darkModeToggle.addEventListener('click', function() {
+        document.documentElement.classList.toggle('dark');
+        this.innerHTML = document.documentElement.classList.contains('dark') ? 
+          '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+      document.body.appendChild(darkModeToggle);
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+    
+ const typed2 = new Typed('#typed2', {
+      strings: [
+        "Developed by",
+        "Nuhu Muhammad Datti"
+        
+      ],
+      typeSpeed: 100,
+      backSpeed: 200,
+      loop: true
+    });
+
+  </script>
+</body>
+</html>

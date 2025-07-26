@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ULA – View All Users</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-js.min.js"></script>
+  <style>
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+</head>
+<body class="bg-gradient-to-br from-white to-indigo-100 min-h-screen px-4 py-10 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-extrabold text-indigo-900">🔄 View All Registered Users (GET Endpoint)</h1>
+      <p class="mt-4 text-lg text-gray-700">Let’s now learn how to create a GET API endpoint to retrieve all registered users from your MySQL database.</p>
+    </header>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-indigo-800">📁 File Structure (Where to Add)</h2>
+      <pre class="bg-gray-800 text-white p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
+project-root/
+├── backend/
+│   ├── server.js ✅ ← Add your new GET /users endpoint here
+│   └── db.js
+      </pre>
+      <p class="mt-3 text-gray-600">We’re updating <code>server.js</code> only. Nothing new needs to be installed.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-indigo-700 mb-4">⚙️ Step: Add GET /users Endpoint</h2>
+      <p class="text-gray-700">Below your existing login route in <code>server.js</code>, add this:</p>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto"><code class="language-js">app.get('/users', (req, res) => {
+  const sql = 'SELECT id, name, email FROM users';
+  db.query(sql, (err, results) => {
+    if (err) return res.status(500).json({ error: 'Something went wrong.' });
+    res.json(results);
+  });
+});</code></pre>
+      <p class="mt-3 text-sm text-gray-600">🧠 This selects all users from MySQL and returns them as JSON — perfect for an admin dashboard or mobile app.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-indigo-700 mb-4">📬 Test in Postman</h2>
+      <ul class="text-sm text-indigo-900 space-y-2">
+        <li>✅ Open Postman</li>
+        <li>🧪 Method: <code>GET</code></li>
+        <li>🔗 URL: <code>http://localhost:5000/users</code></li>
+        <li>🧠 You should see a JSON array of all registered users</li>
+      </ul>
+      <p class="mt-3 text-gray-600">No token required (yet). This is a public endpoint for now. Later, we’ll add admin protection.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-bold text-indigo-700 mb-4">🧠 Final Notes (Layman Style)</h2>
+      <ul class="list-disc list-inside text-indigo-900 text-sm">
+        <li>📥 <code>db.query()</code> talks to your MySQL database</li>
+        <li>📦 You SELECT only name and email to avoid exposing passwords</li>
+        <li>🧾 You return JSON so other apps (React, mobile) can use the data easily</li>
+      </ul>
+    </section>
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <footer class="text-center text-sm text-gray-500 mt-10">
+      <p>🌍 Designed by ULA & 5IRE • Built with Clarity & Courage • Viewing All Users</p>
+    </footer>
+
+    <script>
+      function copyCode(id) {
+        const el = document.getElementById(id);
+        const text = el.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ Code copied to clipboard!');
+        });
+      }
+      AOS.init();
+    </script>
+  </div>
+</body>
+</html>

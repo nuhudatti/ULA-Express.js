@@ -1,0 +1,394 @@
+/* General Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('Images/background.JPG'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    color: #333;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Hero Banner (Header + Slide Sections + Image) */
+.hero {
+    position: relative;
+    width: 100%;
+    min-height: 100vh; /* Ensure it covers full screen */
+    background-image: url('Images/background.JPG'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Header */
+header {
+    width: 100%;
+    text-align: center;
+    color: white;
+    background-image: url('Images/explore.jpeg'); /* Replace with your actual image file */
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+    padding: 40px 10px;
+    position: relative;
+    z-index: 2;
+}
+
+header h1 {
+    font-size: 2.5rem;
+}
+
+header p {
+    font-size: 1.2rem;
+}
+
+/* Sliding Section */
+#slide {
+    position: relative;
+    width: 100%;
+    height: 60vh; /* Adjust this based on preference */
+    background-image: url('Images/wood.jpeg'); /* Replace with your actual image file */
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* First sliding section (Slides down from the header) */
+.slide-down {
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 50%;
+    /* background-color: rgba(0, 0, 0, 0.6); */
+    color: white;
+    font-size: 20px;
+    /* padding: 20px;
+    border-radius: 8px; */
+    opacity: 0;
+    animation: slideDown 1.5s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Second sliding section (Slides diagonally from top-left) */
+.slide-in {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    width: 40%;
+    transform: translate(-50%, -50%);
+    color: white;
+    /* background-color: rgba(0, 0, 0, 0.6); */
+    font-size: 18px;
+    padding: 20px;
+    opacity: 0;
+    animation: slideIn 1.5s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translate(-100%, -100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+}
+
+/* Second Image Section */
+.secondImg {
+    width: 100%;
+    height: 40vh; /* Ensures it takes some portion */
+    background-image: url('Images/change.jpeg'); /* Replace with your actual image file */
+    background-size: cover; /* Ensures the image covers the entire screen */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .slide-down {
+        width: 70%;
+        left: 10%;
+        font-size: 18px;
+    }
+
+    .slide-in {
+        width: 80%;
+        left: 10%;
+        font-size: 16px;
+        top: 60%;
+    }
+}
+
+@media (max-width: 480px) {
+    .slide-down, .slide-in {
+        width: 90%;
+        left: 5%;
+        font-size: 14px;
+        padding: 15px;
+    }
+}
+
+/* BODY */
+
+/* Sections */
+.container1 {
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto;
+    background-image: url('Images/background.JPG'); /* Replace with your actual image file */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.container1 img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.text {
+    padding: 20px;
+}
+
+.text a{
+    text-decoration: none;
+}
+
+h2, h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* Buttons */
+button {
+    background: #e63946;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #d62839;
+}
+
+/* SLIDING_IMAGES */
+
+/* Reset default styles */
+
+/* Slider Container */
+.slider2 {
+    width: 100%; /* Full width of the viewport */
+    max-width: 1200px; /* Maximum width for large screens */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    cursor: grab;
+}
+
+/* Slide Track */
+.slides2 {
+    display: flex;
+    gap: 10px; /* Space between images */
+    transition: transform 0.5s ease-in-out; /* Smooth scrolling */
+    user-select: none;
+}
+
+/* Individual Slide */
+.slide2 {
+    position: relative;
+    width: 150px; /* Small default width */
+    height: 300px; /* Default height */
+    overflow: hidden;
+    border-radius: 15px;
+    transition: width 0.5s ease-in-out, height 0.5s ease-in-out;
+}
+
+/* Image Styling */
+.slide2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Leader Info (Hidden by Default) */
+.info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
+/* Expand Slide on Hover */
+.slide2:hover {
+    width: 250px; /* Expand width on hover */
+    height: 350px; /* Expand height on hover */
+}
+
+.slide2:hover img {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+}
+
+.slide2:hover .info {
+    opacity: 1; /* Show info on hover */
+}
+
+/* Navigation Buttons */
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.prev {
+    left: 0;
+}
+
+.next {
+    right: 0;
+}
+
+/* Indicators (dots) */
+.indicators {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.indicator.active {
+    background-color: #fff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .slider2 {
+        width: 95%;
+    }
+
+    .slide2 {
+        width: 120px;
+        height: 250px;
+    }
+
+    .slide2:hover {
+        width: 200px;
+        height: 300px;
+    }
+}
+
+.floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+
+/* Footer */
+footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    background-image: url('Images/explore.jpeg'); /* Replace with your actual image file */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

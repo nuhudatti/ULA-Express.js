@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ULA – Save Users in MySQL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-js.min.js"></script>
+  <style>
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+</head>
+<body class="bg-gradient-to-br from-white to-green-100 min-h-screen px-4 py-10 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-extrabold text-green-900">🗄️ Store Registered Users in MySQL</h1>
+      <p class="mt-4 text-lg text-gray-700">Let’s now connect your backend to <strong>MySQL</strong> so your user data can be stored in a real database. This is how the world does it — Facebook, Uber, and NITDA all use real DBs.</p>
+    </header>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-green-800">📁 File Structure (Where to Paste)</h2>
+      <pre class="bg-gray-800 text-white p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
+project-root/
+├── backend/
+│   ├── <span class="text-green-400">server.js</span>     ✅ ← Main server file
+│   └── <span class="text-green-400">db.js</span>         ✅ ← New: MySQL connection logic
+├── frontend/
+│   └── src/
+│       └── AuthForm.js (unchanged)
+      </pre>
+      <p class="mt-3 text-gray-600">You’ll now create a new file called <code>db.js</code> to hold your database connection code.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-700 mb-4">⚙️ Step 1: Install MySQL & Setup Table</h2>
+      <p class="text-gray-700">In your terminal (in the backend folder), run:</p>
+      <pre class="bg-black text-white p-4 rounded-lg text-sm mb-4"><code>npm install mysql2</code></pre>
+      <p class="mt-3">Then open MySQL and run this SQL to create your database and table:</p>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto"><code class="language-sql">CREATE DATABASE IF NOT EXISTS ula_auth;
+USE ula_auth;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(100) UNIQUE,
+  password VARCHAR(255)
+);</code></pre>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-700 mb-4">⚙️ Step 2: Create <code>db.js</code></h2>
+      <p class="text-gray-700 mb-2">Inside the <code>backend</code> folder, create a new file called <code>db.js</code> and paste this code:</p>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto"><code class="language-js">const mysql = require('mysql2');
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '', // Change to your MySQL root password
+  database: 'ula_auth'
+});
+
+db.connect((err) => {
+  if (err) throw err;
+  console.log('✅ MySQL Connected');
+});
+
+module.exports = db;</code></pre>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-700 mb-4">⚙️ Step 3: Update <code>server.js</code></h2>
+      <p class="text-gray-700">Now edit your <code>server.js</code> file to use MySQL instead of memory:</p>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm whitespace-pre-wrap overflow-x-auto"><code class="language-js">const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const db = require('./db');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const JWT_SECRET = 'yourSecretKey';
+
+app.post('/register', async (req, res) => {
+  const { name, email, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+
+  const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
+  db.query(sql, [name, email, hashed], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json({ message: '✅ Registered in DB!' });
+  });
+});
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const sql = 'SELECT * FROM users WHERE email = ?';
+
+  db.query(sql, [email], async (err, results) => {
+    if (err || results.length === 0) return res.status(400).json({ error: 'User not found' });
+    const match = await bcrypt.compare(password, results[0].password);
+    if (!match) return res.status(403).json({ error: 'Wrong password' });
+
+    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+    res.json({ message: '🔓 Login success', token });
+  });
+});
+
+app.listen(5000, () => console.log('🚀 Server running on http://localhost:5000'));</code></pre>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-bold text-green-700 mb-4">🧠 Final Notes (Layman Style)</h2>
+      <ul class="list-disc list-inside text-green-900 text-sm">
+        <li>📦 <strong>MySQL</strong> is your storage box. It remembers users.</li>
+        <li>🧠 <code>db.js</code> opens the connection so your server can talk to MySQL.</li>
+        <li>🔐 You still use bcrypt and JWT — only difference is now users are saved forever (not in memory).</li>
+        <li>🔁 Anytime user registers or logs in, MySQL is used behind the scenes.</li>
+      </ul>
+    </section>
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <footer class="text-center text-sm text-gray-500 mt-10">
+      <p>🌍 Designed by ULA & 5IRE • MySQL Integration • Built for Visionaries</p>
+    </footer>
+
+    <script>
+      function copyCode(id) {
+        const el = document.getElementById(id);
+        const text = el.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ Code copied to clipboard!');
+        });
+      }
+
+      AOS.init();
+
+    </script>
+  </div>
+</body>
+</html>

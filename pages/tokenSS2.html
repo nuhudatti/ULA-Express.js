@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ULA – Token Storage & Sessions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-js.min.js"></script>
+  <style>
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+  <style>
+    .explanation {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-white to-purple-100 min-h-screen px-4 py-10 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-extrabold text-purple-900">💾 Handle Token Storage, Sessions & Errors</h1>
+      <p class="mt-4 text-lg text-gray-700">This section shows how to safely store JWT tokens, manage user sessions, and display clear error messages on the frontend.</p>
+    </header>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-purple-800">📁 File Structure</h2>
+      <pre class="bg-gray-800 text-white p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
+my-app/
+├── src/
+│   ├── components/
+│   │   └── Login.js ✅
+│   ├── App.js ✅
+│   └── index.js
+      </pre>
+      <pre><code>
+ula-auth-project/
+├── <span class="text-green-400">backend/</span>                  
+│   ├── <span class="text-yellow-400">server.js</span>             ← Express server with /login & /register
+│   ├── <span class="text-yellow-400">db.js</span>                 ← MySQL database connection
+│   ├── <span class="text-yellow-400">.env</span>                  ← Secrets (DB, JWT_SECRET)
+│   ├── <span class="text-green-400">routes/</span>                
+│   │   ├── <span class="text-yellow-400">auth.js</span>           ← Handles JWT auth (login/register)
+│   │   └── <span class="text-yellow-400">users.js</span>          ← Protected GET /users route
+│   └── <span class="text-green-400">middleware/</span>
+│       └── <span class="text-yellow-400">auth.js</span>           ← Verifies JWT tokens
+
+├── <span class="text-green-400">frontend/</span>
+│   ├── <span class="text-green-400">public/</span>
+│   │   └── <span class="text-yellow-400">index.html</span>        ← Root HTML file
+│   ├── <span class="text-green-400">src/</span>
+│   │   ├── <span class="text-yellow-400">App.js</span>            ← Main logic (token check, logout)
+│   │   ├── <span class="text-yellow-400">Login.js</span>          ← Login form with error handling
+│   │   ├── <span class="text-yellow-400">Register.js</span>       ← Registration form
+│   │   ├── <span class="text-yellow-400">Dashboard.js</span>      ← Protected user dashboard
+│   │   ├── <span class="text-yellow-400">ProtectedRoute.js</span> ← Route guard using token
+│   │   └── <span class="text-yellow-400">index.js</span>          ← React entry point
+│   └── <span class="text-yellow-400">App.css</span>               ← Optional Tailwind styles
+
+├── <span class="text-yellow-400">tailwind.config.js</span>        ← Tailwind setup
+├── <span class="text-yellow-400">package.json</span>              ← Project dependencies
+└── <span class="text-yellow-400">README.md</span>                 ← Course info + documentation
+</code></pre>
+
+      <p class="mt-3 text-gray-600">Paste each block in the right file as shown.</p>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-purple-800 mb-4">📍 1. Store Token After Login (in Login.js)</h2>
+      <pre id="code1" class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-js">fetch('http://localhost:5000/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.token) {
+    localStorage.setItem('authToken', data.token);
+    alert('✅ Login Successful');
+  } else {
+    alert('❌ Invalid Credentials');
+  }
+})
+.catch(err => console.error('Error:', err));</code></pre>
+      <button onclick="toggleExplain('exp1')" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">📖 Explain Code</button>
+      <div id="exp1" class="explanation mt-3 text-sm text-purple-900">
+        ✅ This code sends a login request and stores the JWT token in the browser so we can access secure pages later.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-purple-800 mb-4">🔄 2. Check Token on Page Load (App.js)</h2>
+      <pre id="code2" class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-js">useEffect(() => {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    navigate('/login');
+  }
+}, []);</code></pre>
+      <button onclick="toggleExplain('exp2')" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">📖 Explain Code</button>
+      <div id="exp2" class="explanation mt-3 text-sm text-purple-900">
+        🔍 This makes sure if a user is not logged in (no token), they are redirected to the login page.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-purple-800 mb-4">🧹 3. Logout and Clear Session (App.js)</h2>
+      <pre id="code3" class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-js">const handleLogout = () => {
+  localStorage.removeItem('authToken');
+  alert('👋 Logged out');
+  navigate('/login');
+};</code></pre>
+      <button onclick="toggleExplain('exp3')" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">📖 Explain Code</button>
+      <div id="exp3" class="explanation mt-3 text-sm text-purple-900">
+        🧼 When logout is clicked, the token is removed and the user is sent back to login. This keeps the session safe.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-purple-800 mb-4">🚨 4. Show User-Friendly Errors (Login.js)</h2>
+      <pre id="code4" class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-js">if (!email || !password) {
+  setError('❗ Email and password are required');
+}
+
+if (response.status === 401) {
+  setError('⛔ Invalid token — please log in again');
+}</code></pre>
+      <button onclick="toggleExplain('exp4')" class="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">📖 Explain Code</button>
+      <div id="exp4" class="explanation mt-3 text-sm text-purple-900">
+        💬 These checks give users clear errors so they know what to fix — no more blank screens or confusion.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-bold text-purple-800 mb-4">🧠 Final Summary</h2>
+      <ul class="list-disc list-inside text-purple-900 text-sm">
+        <li>🔐 Save token after login</li>
+        <li>🚪 Check & remove token during session</li>
+        <li>📋 Show clear errors so users understand what to fix</li>
+      </ul>
+    </section>
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <footer class="text-center text-sm text-gray-500 mt-10">
+      <p>🌍 ULA & 5IRE • Frontend Secure Sessions</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleExplain(id) {
+      const div = document.getElementById(id);
+      div.style.display = div.style.display === 'none' || div.style.display === '' ? 'block' : 'none';
+    }
+    AOS.init();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ULA – Protect Routes & Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-js.min.js"></script>
+  <style>
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+  <style>
+    .explanation { display: none; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-white to-green-100 min-h-screen px-4 py-10 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-12 text-center">
+      <h1 class="text-4xl font-extrabold text-green-900">🛡️ Protect Routes & Build Dashboard</h1>
+      <p class="mt-4 text-lg text-gray-700">In this step, we’ll secure private pages using JWT and display a simple but powerful dashboard.</p>
+    </header>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-2xl font-bold mb-4 text-green-800">📁 File Structure</h2>
+      <pre class="bg-gray-800 text-white p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">
+my-app/
+├── src/
+│   ├── components/
+│   │   ├── Dashboard.js ✅
+│   │   └── ProtectedRoute.js ✅
+│   ├── App.js ✅
+│   └── index.js</pre>
+      <p class="mt-3 text-gray-600">Paste each code block into the matching file above.</p>
+      <pre><code>
+ula-auth-project/
+├── <span class="text-green-400">backend/</span>                  
+│   ├── <span class="text-yellow-400">server.js</span>             ← Main Express server
+│   ├── <span class="text-yellow-400">db.js</span>                 ← MySQL or MongoDB connection
+│   ├── <span class="text-yellow-400">.env</span>                  ← Secrets like DB + JWT keys
+│   ├── <span class="text-green-400">middleware/</span>
+│   │   └── <span class="text-yellow-400">auth.js</span>           ← JWT token middleware
+│   ├── <span class="text-green-400">routes/</span>
+│   │   ├── <span class="text-yellow-400">auth.js</span>           ← /login & /register endpoints
+│   │   └── <span class="text-yellow-400">users.js</span>          ← Protected routes
+│   └── <span class="text-green-400">controllers/</span>
+│       └── <span class="text-yellow-400">userController.js</span> ← Logic (clean code separation)
+
+├── <span class="text-green-400">frontend/</span>                 
+│   ├── <span class="text-green-400">public/</span>
+│   │   └── <span class="text-yellow-400">index.html</span>        ← Root HTML file
+│   ├── <span class="text-green-400">src/</span>
+│   │   ├── <span class="text-yellow-400">App.js</span>            ← Renders AuthForm & Routes
+│   │   ├── <span class="text-yellow-400">AuthForm.js</span>       ← Login/Register form component
+│   │   ├── <span class="text-yellow-400">Dashboard.js</span>      ← Protected dashboard page
+│   │   ├── <span class="text-yellow-400">ProtectedRoute.js</span> ← Checks for token before loading
+│   │   ├── <span class="text-yellow-400">index.js</span>          ← React entry point
+│   │   └── <span class="text-yellow-400">App.css</span>           ← Optional Tailwind or custom CSS
+│   └── <span class="text-yellow-400">tailwind.config.js</span>    ← Tailwind setup config
+
+├── <span class="text-yellow-400">README.md</span>                 ← Project documentation
+├── <span class="text-yellow-400">package.json</span>              ← Project dependencies
+└── <span class="text-yellow-400">.gitignore</span>
+</code></pre>
+
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-800 mb-4">🛡️ 1. Create a ProtectedRoute Component</h2>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-html">// components/ProtectedRoute.js
+import React from 'react';
+import &#123; Navigate &#125; from 'react-router-dom';
+
+const ProtectedRoute = (&#123; children &#125;) =&gt; &#123;
+  const token = localStorage.getItem('authToken');
+  return token ? children : &lt;Navigate to="/login" /&gt;;
+&#125;;
+
+export default ProtectedRoute;</code></pre>
+      <button onclick="toggleExplain('exp1')" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">📖 Explain Code</button>
+      <div id="exp1" class="explanation mt-3 text-sm text-green-900">
+        🔐 This custom route checks if the token exists in `localStorage`. If yes, it allows access. If not, it redirects the user to login. Think of it like a locked door that checks for your key.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-800 mb-4">📊 2. Create a Dashboard Page</h2>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-html">// components/Dashboard.js
+import React from 'react';
+
+const Dashboard = () =&gt; &#123;
+  return (
+    &lt;div className="text-center mt-10"&gt;
+      &lt;h1 className="text-3xl font-bold text-green-700"&gt;📊 Welcome to the Dashboard&lt;/h1&gt;
+      &lt;p className="mt-4 text-gray-600"&gt;This page is protected and visible only after login.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+&#125;;
+
+export default Dashboard;</code></pre>
+      <button onclick="toggleExplain('exp2')" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">📖 Explain Code</button>
+      <div id="exp2" class="explanation mt-3 text-sm text-green-900">
+        ✅ This is your private area. The content here will only show after login. You can later show stats, charts, or user data here.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg mb-10">
+      <h2 class="text-xl font-bold text-green-800 mb-4">⚙️ 3. Protect the Route in App.js</h2>
+      <pre class="bg-[#2d2d2d] text-white p-4 rounded-lg text-sm overflow-x-auto"><code class="language-html">// App.js
+import &#123; Routes, Route &#125; from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
+
+&lt;Routes&gt;
+  &lt;Route path="/dashboard" element=&#123;
+    &lt;ProtectedRoute&gt;
+      &lt;Dashboard /&gt;
+    &lt;/ProtectedRoute&gt;
+  &#125; /&gt;
+&lt;/Routes&gt;</code></pre>
+      <button onclick="toggleExplain('exp3')" class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">📖 Explain Code</button>
+      <div id="exp3" class="explanation mt-3 text-sm text-green-900">
+        🔒 We wrap our `&lt;Dashboard /&gt;` component with `&lt;ProtectedRoute&gt;` to restrict access unless token is present.
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-xl shadow-lg">
+      <h2 class="text-xl font-bold text-green-800 mb-4">🧠 Summary (Layman Explanation)</h2>
+      <ul class="list-disc list-inside text-green-900 text-sm">
+        <li>🚪 <strong>ProtectedRoute:</strong> Like a guard who only lets in people with valid tokens</li>
+        <li>📊 <strong>Dashboard:</strong> Special VIP room — only those with the access key can see it</li>
+        <li>🔐 <strong>JWT Token:</strong> Your invisible badge that proves you’re allowed in</li>
+      </ul>
+    </section>
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <footer class="text-center text-sm text-gray-500 mt-10">
+      <p>🌍 ULA &amp; 5IRE • Secured Navigation Layer Complete</p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleExplain(id) {
+      const div = document.getElementById(id);
+      div.style.display = div.style.display === 'none' || div.style.display === '' ? 'block' : 'none';
+    }
+    AOS.init();
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Tracks | Express.js Legacy Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00C896;
+      --secondary: #5E2BFF;
+      --dark: #0F172A;
+      --light: #F8FAFC;
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--light);
+      color: var(--dark);
+    }
+    
+    .dark body {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, rgba(0,200,150,0.1) 0%, rgba(94,43,255,0.1) 100%);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color:white;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <!-- Hero Section -->
+  <section class="py-20 px-6 text-center hero-gradient">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">
+        <span class="text-gradient">Project Tracks</span>
+      </h1>
+      <p class="text-xl md:text-2xl opacity-90 mb-8">Build complete applications with guided projects</p>
+      <p class="max-w-2xl mx-auto">Choose your project track to apply your Express.js knowledge in real-world scenarios</p>
+    </div>
+  </section>
+
+  <!-- Project Tracks -->
+  <section class="py-16 px-6 md:px-12" id="features">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Project 1 -->
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 card-hover">
+          <div class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6">
+            <i class="fas fa-user-shield text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Authentication Mastery</h3>
+          <p class="opacity-80 mb-6">Complete this trail and you'll understand:</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>User Registration</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Secure Password Storage</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>JWT Authentication</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Protected Routes</span>
+            </li>
+          </ul>
+          <a href="./auth.html"  data-target="features" class="goto-other w-full px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold hover:shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i> Start Project
+          </a>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 card-hover">
+          <div class="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
+            <i class="fas fa-database text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Database System</h3>
+          <p class="opacity-80 mb-6">You'll learn to build:</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>MySQL Database Setup</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Voter Data Model</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Admin CRUD Operations</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Secure Data Collection</span>
+            </li>
+          </ul>
+          <a href="./backend.html"  data-target="features" class=" goto-other w-full px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold hover:shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i> Start Project
+          </a>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl border-2 border-gray-200 dark:border-gray-700 card-hover">
+          <div class="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 mb-6">
+            <i class="fas fa-code text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-4">Fullstack Application</h3>
+          <p class="opacity-80 mb-6">You'll learn to build:</p>
+          <ul class="space-y-3 mb-8">
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Registration & Login Forms</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>Protected Routes</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>JWT Token Management</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+              <span>API Communication</span>
+            </li>
+          </ul>
+          <a href="./react.html" data-target="features" class="  goto-other w-full px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold hover:shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i> Start Project
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back Button -->
+  <section class="pb-20 px-6 text-center">
+    <a href="index.html" class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Main Menu
+    </a>
+  </section>
+
+
+
+   <a href="../index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back To Home
+    </div>
+    </a>
+
+  <script>
+   document.addEventListener('DOMContentLoaded', () => {
+    // Save clicked section to localStorage
+    document.querySelectorAll('.goto-other').forEach(button => {
+      button.addEventListener('click', () => {
+        const target = button.getAttribute('data-target');
+        localStorage.setItem('scrollToSection', target);
+      });
+    });
+
+    // When coming back to this page, scroll to saved section
+    const sectionId = localStorage.getItem('scrollToSection');
+    if (sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+      localStorage.removeItem('scrollToSection'); // Optional: clear after scroll
+    }
+  });
+    AOS.init();
+  </script>
+</body>
+</html>

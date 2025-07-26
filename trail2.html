@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ULA – Unified Learning Archive</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: radial-gradient(circle at top left, #f0fdf4, #e0f7fa);
+      }
+      .glass {
+        backdrop-filter: blur(25px);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .glass:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
+      .animated-gradient {
+        background: linear-gradient(270deg, #00e0ff, #8affff, #00e0ff);
+        background-size: 600% 600%;
+        animation: gradientMove 8s ease infinite;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    </style>
+  </head>
+  <body class="text-gray-800 dark:text-white dark:bg-gray-900">
+    <!-- Hero Banner -->
+    <section class="h-screen flex flex-col justify-center items-center text-center px-6 bg-gradient-to-tr from-[#e0f7fa] via-white to-[#f0fdf4] dark:bg-gray-800">
+      <h1 class="text-5xl sm:text-6xl font-extrabold animated-gradient">Unified Learning for a United Future</h1>
+      <p class="mt-6 text-lg max-w-2xl text-gray-600 dark:text-gray-300">Powered by 5IRE & Asteria — igniting Africa’s educational revolution through tech, culture & vision.</p>
+      <a href="#start" class="mt-8 px-8 py-4 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition">🚀 Start Exploring</a>
+    </section>
+
+    <!-- Vision Section -->
+    <section id="start" class="py-20 px-8 md:px-20 bg-white dark:bg-gray-800">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-6">What is ULA?</h2>
+        <p class="text-lg text-gray-700 dark:text-gray-300">The Unified Learning Archive is Africa’s gateway to global learning evolution — blending innovation, heritage, and digital transformation. Built for centers like NITDA, NCAIR, and bold minds across the continent.</p>
+      </div>
+    </section>
+
+    <!-- Core Modules -->
+    <section class="py-20 px-8 md:px-20 bg-gradient-to-b from-gray-50 via-white to-gray-100 dark:bg-gray-900">
+      <div class="max-w-7xl mx-auto">
+        <h3 class="text-3xl font-semibold mb-12 text-center">💡 Core Learning Modules</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          <!-- Repeat this card for each module -->
+          <a href="./pages/express_auth.html" class="glass p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all">
+            <h4 class="text-xl font-bold mb-2">🛡️ Express.js Authentication</h4>
+            <p>Master the art of secure backend APIs using JWT and Node.js.</p>
+          </a>
+          <a href="./pages/mySQL2.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🧾 MySQL User Storage</h4>
+            <p>Learn how to safely store user data into structured databases.</p>
+          </a>
+          <a href="./pages/view_registerd_user.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🔄 View Registered Users</h4>
+            <p>Query & display users through dynamic API endpoints.</p>
+          </a>
+          <a href="./pages/protectedEndPoint.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🔐 Protected Endpoints</h4>
+            <p>Build secure admin APIs that require authentication.</p>
+          </a>
+          <a href="./pages/react_frontend.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">⚛️ React Frontend Setup</h4>
+            <p>Start building responsive, dynamic interfaces with React.js.</p>
+          </a>
+          <a href="./pages/react_login_register.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🔒 React Auth Pages</h4>
+            <p>Create beautiful login/register UI with React components.</p>
+          </a>
+          <a href="./pages/connect_fontE_backE.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🔗 Connect Front & Back</h4>
+            <p>Send & receive real data using Fetch and Axios seamlessly.</p>
+          </a>
+          <a href="./pages/pRoute2.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">🛡️ React Protected Routes</h4>
+            <p>Lock down pages and reveal dashboards to verified users only.</p>
+          </a>
+          <a href="./pages/connect_fontE_backE.html" class="glass p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">💾 Token Storage & Sessions</h4>
+            <p>Manage sessions, store JWT tokens, and handle errors gracefully.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Narration -->
+    <section class="py-20 px-8 md:px-20 bg-white dark:bg-gray-800">
+      <div class="text-center max-w-2xl mx-auto">
+        <h3 class="text-3xl font-semibold mb-4">🎙️ Audio Welcome</h3>
+        <audio controls autoplay class="mx-auto">
+          <source src="welcome.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+        <p class="mt-4 text-gray-600 dark:text-gray-300">A narrated introduction to ULA’s legacy-driven mission.</p>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 px-8 md:px-20 bg-gradient-to-r from-white to-green-50 dark:bg-gray-900">
+      <div class="max-w-6xl mx-auto">
+        <h3 class="text-3xl font-bold text-center mb-10">🌍 Voices of Vision</h3>
+        <div class="grid md:grid-cols-3 gap-10">
+          <div class="glass p-6 rounded-xl text-center">
+            <p class="italic">“ULA is the type of platform we envisioned at NITDA. Proud to see it happen.”</p>
+            <div class="mt-4 font-bold">– Dr. Inuwa, NITDA Director</div>
+          </div>
+          <div class="glass p-6 rounded-xl text-center">
+            <p class="italic">“Never have I seen a more intuitive learning interface, it inspires brilliance.”</p>
+            <div class="mt-4 font-bold">– Amina Yusuf, Tech Educator</div>
+          </div>
+          <div class="glass p-6 rounded-xl text-center">
+            <p class="italic">“ULA represents the digital rebirth of African education.”</p>
+            <div class="mt-4 font-bold">– Tunde Balogun, Policy Advisor</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-10 px-8 mt-10">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div>
+          <p class="text-lg font-semibold">ULA – Unified Learning Archive</p>
+          <p class="text-sm">In partnership with 5IRE & Asteria Alliance Ltd</p>
+          <p class="text-xs mt-2">© 2025 All rights reserved.</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+          <a href="mailto:admin@asteria.com.ng" class="underline hover:text-green-400">📩 Contact Us</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

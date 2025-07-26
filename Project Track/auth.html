@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Authentication API Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        .slide { display: none; }
+        .active-slide { display: block; }
+        .completed { background-color: #d1fae5; border-left-color: #10b981; }
+        .tab-button.active { background-color: #3b82f6; color: white; }
+        .code-explanation { display: none; }
+        .code-block { position: relative; }
+        .copy-btn { 
+            position: absolute; 
+            top: 0.5rem; 
+            right: 0.5rem; 
+            background: rgba(30, 41, 59, 0.8);
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .floating-icons {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+
+    .nav-floating {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      /* background: #00ffc8; */
+      padding: 0.75rem 1rem;
+      border-radius: 40px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(14, 6, 170, 0.7);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-800 mb-3">🔐 Authentication API Masterclass</h1>
+            <p class="text-xl text-gray-600">From zero to fully functional auth system - no experience needed!</p>
+            <div class="mt-6 bg-blue-100 border-l-4 border-blue-500 p-4 inline-block">
+                <p class="text-blue-700">Complete this trail and you'll understand:</p>
+                <ul class="list-disc list-inside text-left">
+                    <li>User Registration</li>
+                    <li>Secure Password Storage</li>
+                    <li>JWT Authentication</li>
+                    <li>Protected Routes</li>
+                </ul>
+            </div>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Learning Progress</h2>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div id="progress-bar" class="bg-blue-600 h-4 rounded-full" style="width: 0%"></div>
+            </div>
+            <div class="grid grid-cols-5 gap-2 text-sm text-center">
+                <div class="p-2 rounded completed" id="step-1-indicator">1. Setup</div>
+                <div class="p-2 rounded bg-gray-100" id="step-2-indicator">2. Structure</div>
+                <div class="p-2 rounded bg-gray-100" id="step-3-indicator">3. Environment</div>
+                <div class="p-2 rounded bg-gray-100" id="step-4-indicator">4. Coding</div>
+                <div class="p-2 rounded bg-gray-100" id="step-5-indicator">5. Testing</div>
+            </div>
+        </div>
+
+        <!-- Slides Container -->
+        <div id="slides-container">
+            <!-- Slide 1: Introduction -->
+            <div class="slide active-slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-1">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Welcome to Your Learning Journey!</h2>
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">This complete trail will guide you through building a professional authentication system with Node.js and Express. Here's what makes this learning experience special:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h3 class="font-bold text-green-800 mb-2">🏆 Complete Beginner Friendly</h3>
+                            <p class="text-green-700">No prior knowledge needed - we explain every concept from the ground up</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h3 class="font-bold text-blue-800 mb-2">🧩 Interactive Learning</h3>
+                            <p class="text-blue-700">Click-to-reveal explanations, visual aids, and practical examples</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <h3 class="font-bold text-purple-800 mb-2">🔍 Deep Understanding</h3>
+                            <p class="text-purple-700">Not just copy-paste - you'll truly understand how everything works</p>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                            <h3 class="font-bold text-yellow-800 mb-2">🚀 Professional Results</h3>
+                            <p class="text-yellow-700">Build production-ready authentication following best practices</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
+                        <p class="text-blue-700"><span class="font-bold">Real-world analogy:</span> Think of this system like a nightclub:</p>
+                        <ul class="list-disc list-inside pl-4 mt-2">
+                            <li><span class="font-semibold">Registration</span> - Getting your name on the guest list</li>
+                            <li><span class="font-semibold">Login</span> - Showing ID to get a wristband</li>
+                            <li><span class="font-semibold">JWT Token</span> - Your wristband that gets checked at the door</li>
+                            <li><span class="font-semibold">Protected Routes</span> - VIP areas that require wristband checks</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button class="invisible px-4 py-2 rounded-md"></button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Start Learning →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 2: Project Setup -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-2">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 1: Project Setup</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">First, we need to set up our development environment. This is like preparing your kitchen before cooking a meal - gathering all the tools and ingredients you'll need.</p>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-bash"># Create project folder and navigate into it
+mkdir auth-api
+cd auth-api
+
+# Initialize a new Node.js project (creates package.json)
+npm init -y
+
+# Install required packages
+npm install express bcryptjs jsonwebtoken dotenv
+
+# Install nodemon for development (auto-restarts server)
+npm install nodemon --save-dev</code></pre>
+                    </div>
+                    
+                    <button onclick="toggleExplanation('setup-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                        Explain What These Packages Do
+                    </button>
+                    
+                    <div id="setup-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                        <h4 class="font-bold text-gray-800 mb-2">Package Breakdown:</h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <span class="font-semibold text-purple-600">express</span> - The web framework that handles HTTP requests and responses. 
+                                <span class="text-gray-600">(Like the foundation of a house)</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold text-purple-600">bcryptjs</span> - Hashes passwords securely so they're never stored in plain text. 
+                                <span class="text-gray-600">(Like a safe for your passwords)</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold text-purple-600">jsonwebtoken</span> - Creates and verifies JWT tokens for authentication. 
+                                <span class="text-gray-600">(Like digital wristbands for your users)</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold text-purple-600">dotenv</span> - Loads environment variables from a .env file. 
+                                <span class="text-gray-600">(Like a secret vault for configuration)</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold text-purple-600">nodemon</span> - Automatically restarts server when files change. 
+                                <span class="text-gray-600">(Like an assistant who reloads your tools when you make changes)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-4">
+                        <h4 class="font-bold text-yellow-800 mb-2">💡 Pro Tip:</h4>
+                        <p class="text-yellow-700">After running these commands, check your package.json file. You should see all these packages listed under "dependencies" and "devDependencies".</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 3: Project Structure -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-3">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 2: Project Structure</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">A good project structure is like organizing your toolbox - everything has its place and is easy to find. Here's how we'll organize our authentication API:</p>
+                    
+                    <div class="bg-gray-100 p-4 rounded-md mb-6">
+                        <pre class="text-gray-800 font-mono text-sm">auth-api/
+│
+├── index.js         # Main server file (the heart of our application)
+├── .env             # Environment variables (keeps our secrets safe)
+└── users.json       # Temporary database file (will be created automatically)</pre>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h3 class="font-bold text-blue-800 mb-2">📁 index.js</h3>
+                            <p class="text-blue-700">This is our main server file where all the magic happens. It will contain:</p>
+                            <ul class="list-disc list-inside pl-4 mt-2 text-sm">
+                                <li>Server setup</li>
+                                <li>Route handlers</li>
+                                <li>Authentication logic</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h3 class="font-bold text-green-800 mb-2">🔒 .env</h3>
+                            <p class="text-green-700">This file stores sensitive configuration like:</p>
+                            <ul class="list-disc list-inside pl-4 mt-2 text-sm">
+                                <li>JWT secret key</li>
+                                <li>Database credentials</li>
+                                <li>Server port number</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 border-l-4 border-purple-400 p-4">
+                        <h4 class="font-bold text-purple-800 mb-2">🏗️ Architecture Visualization</h4>
+                        <p class="text-purple-700">Think of this structure like building a house:</p>
+                        <div class="flex items-center justify-center mt-3">
+                            <div class="text-center mx-4">
+                                <div class="w-16 h-16 bg-blue-200 rounded-full flex items-center justify-center mx-auto mb-2">🏠</div>
+                                <p class="text-xs">index.js<br>(Foundation)</p>
+                            </div>
+                            <div class="text-center mx-4">
+                                <div class="w-16 h-16 bg-green-200 rounded-full flex items-center justify-center mx-auto mb-2">🔑</div>
+                                <p class="text-xs">.env<br>(Locks & Keys)</p>
+                            </div>
+                            <div class="text-center mx-4">
+                                <div class="w-16 h-16 bg-yellow-200 rounded-full flex items-center justify-center mx-auto mb-2">📂</div>
+                                <p class="text-xs">users.json<br>(Storage)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 4: Environment Setup -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-4">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 3: Environment Configuration</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">The .env file is like a vault for your sensitive configuration. We'll use it to store secrets that shouldn't be hardcoded in your application.</p>
+                    
+                    <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre class="text-green-400"><code class="language-bash"># Inside auth-api/.env
+JWT_SECRET=your_super_secret_key_here
+PORT=5000</code></pre>
+                    </div>
+                    
+                    <button onclick="toggleExplanation('env-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                        Why Do We Need This?
+                    </button>
+                    
+                    <div id="env-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                        <h4 class="font-bold text-gray-800 mb-2">Environment Variables Explained:</h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <span class="font-semibold text-purple-600">JWT_SECRET</span> - This is like the master key for your JWT tokens. 
+                                <span class="text-gray-600">It should be a long, random string that's kept secret.</span>
+                            </li>
+                            <li>
+                                <span class="font-semibold text-purple-600">PORT</span> - The port number your server will run on. 
+                                <span class="text-gray-600">5000 is common for development, but you can change it.</span>
+                            </li>
+                        </ul>
+                        
+                        <div class="bg-red-50 border-l-4 border-red-400 p-3 mt-3">
+                            <h4 class="font-bold text-red-800 mb-1">⚠️ Important Security Note:</h4>
+                            <p class="text-red-700 text-sm">Never commit your .env file to version control (like GitHub). Add it to your .gitignore file!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mt-4">
+                        <h4 class="font-bold text-blue-800 mb-2">🔐 Security Best Practices</h4>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>Use a different JWT_SECRET in production</li>
+                            <li>Make your secret at least 32 characters long</li>
+                            <li>Consider using a password manager to generate it</li>
+                            <li>Never share your .env file with anyone</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 5: Coding the API -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-5">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 4: Building the API</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">Now we'll create the main server file (index.js) that will handle all our authentication logic.</p>
+                    
+                    <div class="flex border-b mb-4">
+                        <button class="tab-button active px-4 py-2 rounded-t-lg" onclick="openTab('full-code')">Full Code</button>
+                        <button class="tab-button px-4 py-2 rounded-t-lg" onclick="openTab('register-tab')">Registration</button>
+                        <button class="tab-button px-4 py-2 rounded-t-lg" onclick="openTab('login-tab')">Login</button>
+                        <button class="tab-button px-4 py-2 rounded-t-lg" onclick="openTab('protected-tab')">Protected Route</button>
+                    </div>
+                    
+                    <!-- Full Code Tab -->
+                    <div id="full-code" class="tab-content">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4 code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre class="text-green-400"><code class="language-javascript">// Import required modules
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+require('dotenv').config();
+
+// Initialize Express app
+const app = express();
+app.use(express.json());
+
+// File path for our simple user database
+const USERS_FILE = './users.json';
+
+// Helper function to read users from file
+function readUsers() {
+    if (!fs.existsSync(USERS_FILE)) return [];
+    return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+}
+
+// Helper function to save users to file
+function saveUsers(users) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
+
+// 🎯 REGISTRATION ENDPOINT
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+    const users = readUsers();
+
+    // Check if user already exists
+    const userExists = users.find(user => user.username === username);
+    if (userExists) return res.status(400).json({ message: 'User already exists' });
+
+    // Hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // Save new user
+    users.push({ username, password: hashedPassword });
+    saveUsers(users);
+
+    res.status(201).json({ message: 'User registered successfully' });
+});
+
+// 🔑 LOGIN ENDPOINT
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const users = readUsers();
+
+    // Find user
+    const user = users.find(user => user.username === username);
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Compare passwords
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) return res.status(401).json({ message: 'Invalid credentials' });
+
+    // Create and send JWT token
+    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token });
+});
+
+// 🛡️ PROTECTED ROUTE
+app.get('/protected', (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: 'Token missing' });
+
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({ message: `Hello, ${decoded.username}. This is a protected route.` });
+    } catch (err) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+});
+
+// Start the server
+app.listen(process.env.PORT, () => {
+    console.log(`Server running on http://localhost:${process.env.PORT}`);
+});</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Registration Tab -->
+                    <div id="register-tab" class="tab-content" style="display:none">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// 🎯 REGISTRATION ENDPOINT
+app.post('/register', async (req, res) => {
+    // Get username and password from request body
+    const { username, password } = req.body;
+    
+    // Read current users
+    const users = readUsers();
+
+    // Check if username already exists
+    const userExists = users.find(user => user.username === username);
+    if (userExists) return res.status(400).json({ message: 'User already exists' });
+
+    // Hash the password with bcrypt (10 salt rounds)
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    // Add new user to array
+    users.push({ username, password: hashedPassword });
+    
+    // Save updated users array
+    saveUsers(users);
+
+    // Return success response
+    res.status(201).json({ message: 'User registered successfully' });
+});</code></pre>
+                        </div>
+                        <button onclick="toggleExplanation('register-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                            Explain Registration Code
+                        </button>
+                        <div id="register-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                            <h4 class="font-bold text-gray-800 mb-2">Registration Flow:</h4>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><span class="font-semibold">Get credentials</span> - Extract username/password from request</li>
+                                <li><span class="font-semibold">Check existence</span> - Prevent duplicate usernames</li>
+                                <li><span class="font-semibold">Hash password</span> - Never store plain text passwords</li>
+                                <li><span class="font-semibold">Save user</span> - Add to our "database"</li>
+                                <li><span class="font-semibold">Respond</span> - Send success message</li>
+                            </ol>
+                            <div class="bg-green-50 border-l-4 border-green-400 p-3 mt-3">
+                                <h4 class="font-bold text-green-800 mb-1">🔒 Security Note:</h4>
+                                <p class="text-green-700">bcrypt.hash() automatically generates a salt and includes it with the hash, making it extremely secure against brute force attacks.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Login Tab -->
+                    <div id="login-tab" class="tab-content" style="display:none">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// 🔑 LOGIN ENDPOINT
+app.post('/login', async (req, res) => {
+    // Get credentials from request
+    const { username, password } = req.body;
+    
+    // Read users
+    const users = readUsers();
+
+    // Find user by username
+    const user = users.find(user => user.username === username);
+    if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+
+    // Compare provided password with stored hash
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) return res.status(401).json({ message: 'Invalid credentials' });
+
+    // Create JWT token (expires in 1 hour)
+    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    // Send token to client
+    res.json({ token });
+});</code></pre>
+                        </div>
+                        <button onclick="toggleExplanation('login-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                            Explain Login Code
+                        </button>
+                        <div id="login-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                            <h4 class="font-bold text-gray-800 mb-2">Login Flow:</h4>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><span class="font-semibold">Get credentials</span> - Extract username/password</li>
+                                <li><span class="font-semibold">Find user</span> - Check if username exists</li>
+                                <li><span class="font-semibold">Verify password</span> - bcrypt.compare checks against the hash</li>
+                                <li><span class="font-semibold">Create token</span> - JWT with username payload</li>
+                                <li><span class="font-semibold">Send token</span> - Client stores this for future requests</li>
+                            </ol>
+                            <div class="bg-purple-50 border-l-4 border-purple-400 p-3 mt-3">
+                                <h4 class="font-bold text-purple-800 mb-1">🔑 JWT Explained:</h4>
+                                <p class="text-purple-700">The token contains encoded data (username) and a signature that verifies it wasn't tampered with. It's like a digital ID card that expires after 1 hour.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Protected Route Tab -->
+                    <div id="protected-tab" class="tab-content" style="display:none">
+                        <div class="bg-gray-800 rounded-md p-4 mb-4">
+                            <pre class="text-green-400"><code class="language-javascript">// 🛡️ PROTECTED ROUTE
+app.get('/protected', (req, res) => {
+    // Get Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: 'Token missing' });
+
+    // Extract token (format: "Bearer <token>")
+    const token = authHeader.split(' ')[1];
+    
+    try {
+        // Verify token and decode payload
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // If valid, respond with personalized message
+        res.json({ message: `Hello, ${decoded.username}. This is a protected route.` });
+    } catch (err) {
+        // If invalid, send error
+        res.status(401).json({ message: 'Invalid token' });
+    }
+});</code></pre>
+                        </div>
+                        <button onclick="toggleExplanation('protected-explanation')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition mb-4">
+                            Explain Protected Route
+                        </button>
+                        <div id="protected-explanation" class="code-explanation bg-gray-50 p-4 rounded-md">
+                            <h4 class="font-bold text-gray-800 mb-2">Protection Flow:</h4>
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><span class="font-semibold">Check header</span> - Look for Authorization header</li>
+                                <li><span class="font-semibold">Extract token</span> - Remove "Bearer " prefix</li>
+                                <li><span class="font-semibold">Verify token</span> - Check signature and expiration</li>
+                                <li><span class="font-semibold">Handle result</span> - Grant access or deny</li>
+                            </ol>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3 mt-3">
+                                <h4 class="font-bold text-yellow-800 mb-1">🛡️ Security Features:</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Tokens expire after 1 hour (configurable)</li>
+                                    <li>Signature prevents tampering</li>
+                                    <li>No sensitive data is stored in the token</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mt-4">
+                        <h4 class="font-bold text-blue-800 mb-2">🚀 Starting the Server</h4>
+                        <p class="text-blue-700">Add this to your package.json to make starting the server easier:</p>
+                        <div class="bg-gray-800 rounded-md p-3 mt-2">
+                            <pre class="text-green-400 text-sm"><code class="language-json">"scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+}</code></pre>
+                        </div>
+                        <p class="text-blue-700 mt-2">Then run <code class="bg-gray-200 px-1 rounded">npm run dev</code> for development (auto-restarts) or <code class="bg-gray-200 px-1 rounded">npm start</code> for production.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 6: Testing the API -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Step 5: Testing Your API</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">Now that our API is built, let's test all the endpoints to make sure everything works correctly. We'll use Postman (or any API testing tool).</p>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h3 class="font-bold text-green-800 mb-2">1. Test Registration</h3>
+                            <div class="bg-gray-800 rounded-md p-2 mt-2">
+                                <pre class="text-green-400 text-xs"><code>POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "securepassword123"
+}</code></pre>
+                            </div>
+                            <p class="text-green-700 text-sm mt-2">Should return 201 Created</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h3 class="font-bold text-blue-800 mb-2">2. Test Login</h3>
+                            <div class="bg-gray-800 rounded-md p-2 mt-2">
+                                <pre class="text-green-400 text-xs"><code>POST http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "securepassword123"
+}</code></pre>
+                            </div>
+                            <p class="text-blue-700 text-sm mt-2">Should return 200 with a JWT token</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <h3 class="font-bold text-purple-800 mb-2">3. Test Protected Route</h3>
+                            <div class="bg-gray-800 rounded-md p-2 mt-2">
+                                <pre class="text-green-400 text-xs"><code>GET http://localhost:5000/protected
+Authorization: Bearer &lt;your-token-here&gt;</code></pre>
+                            </div>
+                            <p class="text-purple-700 text-sm mt-2">Should return personalized message</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="font-semibold text-gray-800 mb-2">Expected Responses:</h3>
+                    
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full bg-white border border-gray-200">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="py-2 px-4 border-b">Endpoint</th>
+                                    <th class="py-2 px-4 border-b">Success</th>
+                                    <th class="py-2 px-4 border-b">Error</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="py-2 px-4 border-b">/register</td>
+                                    <td class="py-2 px-4 border-b text-green-600">201: User registered</td>
+                                    <td class="py-2 px-4 border-b text-red-600">400: User exists</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border-b">/login</td>
+                                    <td class="py-2 px-4 border-b text-green-600">200: { token }</td>
+                                    <td class="py-2 px-4 border-b text-red-600">400/401: Invalid credentials</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border-b">/protected</td>
+                                    <td class="py-2 px-4 border-b text-green-600">200: Protected message</td>
+                                    <td class="py-2 px-4 border-b text-red-600">401: Missing/invalid token</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <h4 class="font-bold text-yellow-800 mb-2">🧪 Test Cases to Try:</h4>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Register with the same username twice</li>
+                            <li>Login with wrong password</li>
+                            <li>Access protected route without token</li>
+                            <li>Access protected route with expired token (change expiresIn to '1s' for testing)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="nextSlide()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition">
+                        Next Step →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slide 7: Next Steps -->
+            <div class="slide bg-white rounded-lg shadow-md p-6 mb-8" id="slide-7">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">🎉 Congratulations!</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-6">You've successfully built a complete authentication API with Node.js and Express! Here's what you've accomplished:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-green-50 p-5 rounded-lg border border-green-200 flex items-start">
+                            <div class="bg-green-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-green-800 mb-2">User Registration</h3>
+                                <p class="text-green-700">Securely store new users with hashed passwords</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-lg border border-blue-200 flex items-start">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 mb-2">Login System</h3>
+                                <p class="text-blue-700">Authenticate users and issue JWT tokens</p>
+                            </div>
+                        </div>
+                        <div class="bg-purple-50 p-5 rounded-lg border border-purple-200 flex items-start">
+                            <div class="bg-purple-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-purple-800 mb-2">Protected Routes</h3>
+                                <p class="text-purple-700">Restrict access to authorized users only</p>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-200 flex items-start">
+                            <div class="bg-yellow-100 p-3 rounded-full mr-4">✅</div>
+                            <div>
+                                <h3 class="font-bold text-yellow-800 mb-2">Security</h3>
+                                <p class="text-yellow-700">Implemented password hashing and token verification</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Where to Go From Here:</h3>
+                    
+                    <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                        <h4 class="font-bold text-gray-800 mb-2">🚀 Advanced Enhancements</h4>
+                        <ul class="list-disc list-inside space-y-2 pl-4">
+                            <li><span class="font-semibold">Add a database</span> - Replace users.json with MongoDB or PostgreSQL</li>
+                            <li><span class="font-semibold">Email verification</span> - Send confirmation emails</li>
+                            <li><span class="font-semibold">Password reset</span> - Implement forgot password flow</li>
+                            <li><span class="font-semibold">Refresh tokens</span> - For longer sessions without compromising security</li>
+                            <li><span class="font-semibold">Rate limiting</span> - Prevent brute force attacks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                        <h4 class="font-bold text-blue-800 mb-2">📚 Recommended Learning Path</h4>
+                        <ol class="list-decimal list-inside space-y-2 pl-4">
+                            <li>Build a frontend (React, Vue) to connect to your API</li>
+                            <li>Learn about HTTPS and securing your API in production</li>
+                            <li>Explore OAuth for social login (Google, Facebook)</li>
+                            <li>Study API documentation tools like Swagger</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevSlide()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition">
+                        ← Previous
+                    </button>
+                    <button onclick="restartCourse()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">
+                        Start Again 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     <a href="./index.html">
+      <div class="nav-floating bg-gradient-to-r hover:bg-gradient-to-r" onclick="window.scrollTo({behavior: 'smooth' })">
+    Back 
+    </div>
+    </a>
+
+    <script>
+        // Current slide tracking
+        let currentSlide = 1;
+        const totalSlides = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Update step indicators
+            for (let i = 1; i <= 5; i++) {
+                const indicator = document.getElementById(`step-${i}-indicator`);
+                if (i <= Math.ceil(currentSlide / 1.4)) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('bg-gray-100');
+                } else {
+                    indicator.classList.remove('completed');
+                    indicator.classList.add('bg-gray-100');
+                }
+            }
+        }
+        
+        // Navigation functions
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+                currentSlide++;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+                updateProgress();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+                currentSlide--;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+                updateProgress();
+            }
+        }
+        
+        function restartCourse() {
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active-slide');
+            currentSlide = 1;
+            document.getElementById(`slide-${currentSlide}`).classList.add('active-slide');
+            updateProgress();
+        }
+        
+        // Toggle code explanations
+        function toggleExplanation(id) {
+            const explanation = document.getElementById(id);
+            explanation.classList.toggle('code-explanation');
+            explanation.classList.toggle('block');
+        }
+        
+        // Tab functionality
+        function openTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = 'none';
+            }
+            
+            // Remove active class from all buttons
+            const tabButtons = document.getElementsByClassName('tab-button');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+            
+            // Show current tab and mark button as active
+            document.getElementById(tabName).style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.querySelector('code');
+            const range = document.createRange();
+            range.selectNode(codeBlock);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            
+            // Visual feedback
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+            }, 2000);
+        }
+        
+        // Initialize
+        updateProgress();
+        document.querySelector('.tab-button').click(); // Activate first tab
+        AOS.init();
+
+    </script>
+</body>
+</html>
