@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete React Portfolio Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+            --secondary: #60a5fa;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+        
+        .trail-container {
+            max-width: 1200px;
+        }
+        
+        .trail-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .trail-card:hover {
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.1);
+        }
+        
+        .step-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .active-step {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .code-block {
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-tabs {
+            background: #0f172a;
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .file-tab {
+            padding: 6px 12px;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.7;
+            transition: all 0.2s;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .file-tab.active {
+            background: #1e293b;
+            opacity: 1;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .explanation {
+            background: #f8fafc;
+            border-radius: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .explanation.open {
+            max-height: 600px;
+        }
+        
+        .folder-structure {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .file-item {
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .file-item::before {
+            content: "📄";
+            position: absolute;
+            left: 0;
+        }
+        
+        .folder {
+            padding-left: 24px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        
+        .folder::before {
+            content: "📁";
+            position: absolute;
+            left: 0;
+        }
+        
+        .visual-guide {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-radius: 12px;
+            border: 1px dashed #3b82f6;
+        }
+        
+        .nav-floating {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-floating:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-title {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .component-preview {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .api-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .api-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .api-step:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            right: -10%;
+            top: 50%;
+            width: 20%;
+            height: 2px;
+            background: #cbd5e1;
+        }
+        
+        .api-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        
+        .commit-history {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .commit {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .commit:last-child {
+            border-bottom: none;
+        }
+        
+        .commit-hash {
+            font-family: 'Fira Code', monospace;
+            color: #64748b;
+            font-size: 12px;
+        }
+        
+        .commit-message {
+            font-weight: 500;
+        }
+        
+        .deployment-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .deployment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .deployment-logo {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle mr-2"></i> Code copied to clipboard!
+    </div>
+    
+    <div class="trail-container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🚀 Complete React Portfolio Learning Trail</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Build a professional portfolio website with React frontend and Node.js backend - perfect for beginners!</p>
+            
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+                <div class="inline-flex items-center bg-blue-50 rounded-full py-2 px-6">
+                    <div class="bg-blue-100 p-2 rounded-full mr-3">
+                        <i class="fas fa-graduation-cap text-blue-600"></i>
+                    </div>
+                    <p class="text-blue-700 font-medium">Zero experience required</p>
+                </div>
+                
+                <div class="inline-flex items-center bg-green-50 rounded-full py-2 px-6">
+                    <div class="bg-green-100 p-2 rounded-full mr-3">
+                        <i class="fas fa-code text-green-600"></i>
+                    </div>
+                    <p class="text-green-700 font-medium">Complete end-to-end solution</p>
+                </div>
+                
+                <div class="inline-flex items-center bg-purple-50 rounded-full py-2 px-6">
+                    <div class="bg-purple-100 p-2 rounded-full mr-3">
+                        <i class="fas fa-rocket text-purple-600"></i>
+                    </div>
+                    <p class="text-purple-700 font-medium">Ready for deployment</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Progress sidebar -->
+            <div class="lg:col-span-1">
+                <div class="trail-card p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Learning Trail Progress</h2>
+                    
+                    <div class="progress-bar mb-6">
+                        <div class="progress-fill" style="width: 14%;" id="progress-fill"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600 active-step">1</div>
+                            <div class="font-medium">Project Overview</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">2</div>
+                            <div class="text-gray-500">Frontend Setup</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">3</div>
+                            <div class="text-gray-500">Building Components</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">4</div>
+                            <div class="text-gray-500">Routing & Pages</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">5</div>
+                            <div class="text-gray-500">Backend Setup</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">6</div>
+                            <div class="text-gray-500">API Integration</div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">7</div>
+                            <div class="text-gray-500">Testing & Deployment</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Project Stack</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-badge bg-blue-100 text-blue-800">
+                                <i class="fab fa-react"></i> React
+                            </span>
+                            <span class="tech-badge bg-amber-100 text-amber-800">
+                                <i class="fab fa-css3-alt"></i> Tailwind
+                            </span>
+                            <span class="tech-badge bg-emerald-100 text-emerald-800">
+                                <i class="fab fa-node-js"></i> Node.js
+                            </span>
+                            <span class="tech-badge bg-indigo-100 text-indigo-800">
+                                <i class="fas fa-server"></i> Express
+                            </span>
+                            <span class="tech-badge bg-purple-100 text-purple-800">
+                                <i class="fas fa-route"></i> React Router
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Estimated Completion</h3>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                                <i class="fas fa-clock text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">2-3 hours</p>
+                                <p class="text-sm text-gray-500">for beginners</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="lg:col-span-3">
+                <!-- Step 1: Project Overview -->
+                <div class="trail-card p-8 mb-8" id="step-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Project Overview</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        In this learning trail, you'll build a complete portfolio website with React for the frontend and Node.js/Express for the backend. 
+                        The portfolio will include a contact form that sends messages to a backend API.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="feature-card bg-blue-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-blue-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-laptop-code text-blue-600"></i>
+                                Frontend Features
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1"></i>
+                                    <span>Responsive design with Tailwind CSS</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1"></i>
+                                    <span>Multi-page navigation with React Router</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1"></i>
+                                    <span>Interactive contact form</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1"></i>
+                                    <span>Project showcase gallery</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card bg-emerald-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-emerald-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-server text-emerald-600"></i>
+                                Backend Features
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                    <span>Express API endpoint</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                    <span>Contact form submission handling</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                    <span>JSON response handling</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-emerald-500 mt-1"></i>
+                                    <span>Optional data storage</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h3 class="step-title font-bold text-gray-800 text-lg">File Structure Overview</h3>
+                        
+                        <div class="folder-structure mb-4">
+                            <div class="folder">portfolio-frontend/
+                                <div class="file-item">src/</div>
+                                <div class="pl-6">
+                                    <div class="folder">components/
+                                        <div class="file-item">Navbar.jsx</div>
+                                        <div class="file-item">Footer.jsx</div>
+                                        <div class="file-item">ProjectCard.jsx</div>
+                                        <div class="file-item">ContactForm.jsx</div>
+                                    </div>
+                                    <div class="folder">pages/
+                                        <div class="file-item">Home.jsx</div>
+                                        <div class="file-item">Projects.jsx</div>
+                                        <div class="file-item">Contact.jsx</div>
+                                    </div>
+                                    <div class="file-item">App.jsx</div>
+                                    <div class="file-item">index.js</div>
+                                </div>
+                            </div>
+                            
+                            <div class="folder mt-4">portfolio-backend/
+                                <div class="file-item">server.js</div>
+                                <div class="file-item">package.json</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button class="btn-primary next-step" data-target="step-2">
+                            Start Building <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Frontend Setup -->
+                <div class="trail-card p-8 mb-8" id="step-2" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Frontend Setup</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Let's set up our React project with Tailwind CSS for styling. We'll create the basic structure of our portfolio frontend.
+                    </p>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Create React App</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">Terminal</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-green-400"><code># Create React application
+npx create-react-app portfolio-frontend
+cd portfolio-frontend
+
+# Install required dependencies
+npm install react-router-dom axios
+
+# Install Tailwind CSS
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <button class="toggle-explanation w-full bg-blue-50 text-blue-700 font-medium py-3 rounded-lg mb-6">
+                        <i class="fas fa-chevron-down mr-2"></i> What do these commands do?
+                    </button>
+                    
+                    <div class="explanation mb-6">
+                        <div class="p-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i class="fas fa-terminal text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Create React App</h4>
+                                    <p class="text-gray-700">Sets up a new React project with all necessary configurations.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i class="fas fa-cube text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Dependencies</h4>
+                                    <p class="text-gray-700">
+                                        <span class="highlight">react-router-dom</span> for page navigation, 
+                                        <span class="highlight">axios</span> for API requests, and 
+                                        <span class="highlight">Tailwind CSS</span> for styling.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <i class="fas fa-cog text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-1">Tailwind Setup</h4>
+                                    <p class="text-gray-700">Initializes Tailwind CSS with default configuration files.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Configure Tailwind CSS</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">tailwind.config.js</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/index.css</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>@tailwind base;
+@tailwind components;
+@tailwind utilities;</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-yellow-500 text-xl">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-yellow-800 mb-1">Pro Tip</h4>
+                                <p class="text-yellow-700">Run <code class="bg-yellow-100 px-2 py-1 rounded">npm start</code> to launch your development server. It will automatically reload when you make changes!</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn-secondary prev-step" data-target="step-1">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="btn-primary next-step" data-target="step-3">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Building Components -->
+                <div class="trail-card p-8 mb-8" id="step-3" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Building Components</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Now we'll create the core components of our portfolio: Navbar, Project Cards, and the Contact Form.
+                    </p>
+                    
+                    <div class="flex border-b mb-6">
+                        <button class="tab-btn px-4 py-2 font-medium border-b-2 border-transparent text-gray-500" data-tab="navbar-tab">Navbar</button>
+                        <button class="tab-btn px-4 py-2 font-medium border-b-2 border-transparent text-gray-500" data-tab="project-tab">Project Card</button>
+                        <button class="tab-btn px-4 py-2 font-medium border-b-2 border-transparent text-gray-500" data-tab="contact-tab">Contact Form</button>
+                    </div>
+                    
+                    <!-- Navbar Tab -->
+                    <div class="tab-content active" id="navbar-tab">
+                        <h3 class="step-title font-bold text-gray-800 text-lg">Navbar Component</h3>
+                        <p class="text-gray-700 mb-6">The navigation bar will allow users to move between different pages of your portfolio.</p>
+                        
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/components/Navbar.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <pre class="text-amber-300"><code>import React from 'react';
+import { Link } from 'react-router-dom';
+
+const Navbar = () => {
+  return (
+    &lt;nav className="bg-white shadow-md py-4"&gt;
+      &lt;div className="container mx-auto px-4 flex justify-between items-center"&gt;
+        &lt;Link to="/" className="text-xl font-bold text-blue-600"&gt;MyPortfolio&lt;/Link&gt;
+        &lt;div className="flex space-x-6"&gt;
+          &lt;Link to="/" className="text-gray-600 hover:text-blue-600"&gt;Home&lt;/Link&gt;
+          &lt;Link to="/projects" className="text-gray-600 hover:text-blue-600"&gt;Projects&lt;/Link&gt;
+          &lt;Link to="/contact" className="text-gray-600 hover:text-blue-600"&gt;Contact&lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/nav&gt;
+  );
+};
+
+export default Navbar;</code></pre>
+                                <button class="copy-btn">Copy Code</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mb-6">
+                            <div class="flex items-start gap-3">
+                                <div class="text-blue-500 text-xl">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-blue-800 mb-1">Key Features</h4>
+                                    <ul class="list-disc list-inside text-blue-700">
+                                        <li>Uses React Router's <code>Link</code> for navigation</li>
+                                        <li>Responsive design with Tailwind classes</li>
+                                        <li>Hover effects for better user experience</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Card Tab -->
+                    <div class="tab-content" id="project-tab">
+                        <h3 class="step-title font-bold text-gray-800 text-lg">Project Card Component</h3>
+                        <p class="text-gray-700 mb-6">Display your projects in a clean, responsive card layout.</p>
+                        
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/components/ProjectCard.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <pre class="text-amber-300"><code>import React from 'react';
+
+const ProjectCard = ({ title, description, imageUrl }) => {
+  return (
+    &lt;div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"&gt;
+      &lt;img src={imageUrl} alt={title} className="w-full h-48 object-cover" /&gt;
+      &lt;div className="p-6"&gt;
+        &lt;h3 className="text-xl font-bold text-gray-800 mb-2"&gt;{title}&lt;/h3&gt;
+        &lt;p className="text-gray-600"&gt;{description}&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default ProjectCard;</code></pre>
+                                <button class="copy-btn">Copy Code</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-lg mb-6">
+                            <div class="flex items-start gap-3">
+                                <div class="text-purple-500 text-xl">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-purple-800 mb-1">Usage Example</h4>
+                                    <p class="text-purple-700">This component receives three props: title, description, and imageUrl. You can map through your projects data to render multiple cards.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Form Tab -->
+                    <div class="tab-content" id="contact-tab">
+                        <h3 class="step-title font-bold text-gray-800 text-lg">Contact Form Component</h3>
+                        <p class="text-gray-700 mb-6">Create a form that will send messages to your backend API.</p>
+                        
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/components/ContactForm.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <pre class="text-amber-300"><code>import React, { useState } from 'react';
+
+const ContactForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // We'll implement the API call in Step 6
+      setSubmitStatus({ type: 'success', message: 'Message sent successfully!' });
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: 'Failed to send message' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit} className="space-y-6"&gt;
+      &lt;div&gt;
+        &lt;label htmlFor="name" className="block text-gray-700 mb-2"&gt;Name&lt;/label&gt;
+        &lt;input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        /&gt;
+      &lt;/div&gt;
+      
+      &lt;div&gt;
+        &lt;label htmlFor="email" className="block text-gray-700 mb-2"&gt;Email&lt;/label&gt;
+        &lt;input
+          type="email"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        /&gt;
+      &lt;/div&gt;
+      
+      &lt;div&gt;
+        &lt;label htmlFor="message" className="block text-gray-700 mb-2"&gt;Message&lt;/label&gt;
+        &lt;textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          rows="5"
+          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        &gt;&lt;/textarea&gt;
+      &lt;/div&gt;
+      
+      &lt;button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+      &gt;
+        {isSubmitting ? 'Sending...' : 'Send Message'}
+      &lt;/button&gt;
+      
+      {submitStatus && (
+        &lt;div className={`mt-4 p-3 rounded-lg ${
+          submitStatus.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}&gt;
+          {submitStatus.message}
+        &lt;/div&gt;
+      )}
+    &lt;/form&gt;
+  );
+};
+
+export default ContactForm;</code></pre>
+                                <button class="copy-btn">Copy Code</button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-lg mb-6">
+                            <div class="flex items-start gap-3">
+                                <div class="text-green-500 text-xl">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-green-800 mb-1">Form Features</h4>
+                                    <ul class="list-disc list-inside text-green-700">
+                                        <li>Controlled form inputs with React state</li>
+                                        <li>Loading state during submission</li>
+                                        <li>Success/error feedback messages</li>
+                                        <li>Form validation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn-secondary prev-step" data-target="step-2">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="btn-primary next-step" data-target="step-4">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Routing & Pages -->
+                <div class="trail-card p-8 mb-8" id="step-4" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Routing & Pages</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Set up page routing and create the main pages for your portfolio: Home, Projects, and Contact.
+                    </p>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Configure Routing</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/App.jsx</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Projects from './pages/Projects';
+import Contact from './pages/Contact';
+
+function App() {
+  return (
+    &lt;Router&gt;
+      &lt;div className="flex flex-col min-h-screen"&gt;
+        &lt;Navbar /&gt;
+        &lt;main className="flex-grow"&gt;
+          &lt;Routes&gt;
+            &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+            &lt;Route path="/projects" element={&lt;Projects /&gt;} /&gt;
+            &lt;Route path="/contact" element={&lt;Contact /&gt;} /&gt;
+          &lt;/Routes&gt;
+        &lt;/main&gt;
+        &lt;Footer /&gt;
+      &lt;/div&gt;
+    &lt;/Router&gt;
+  );
+}
+
+export default App;</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Home Page</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/pages/Home.jsx</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>import React from 'react';
+
+const Home = () => {
+  return (
+    &lt;div className="container mx-auto px-4 py-12"&gt;
+      &lt;div className="max-w-4xl mx-auto text-center"&gt;
+        &lt;div className="w-32 h-32 mx-auto bg-gray-200 border-2 border-dashed rounded-full mb-6" /&gt;
+        &lt;h1 className="text-4xl font-bold text-gray-800 mb-4"&gt;John Doe&lt;/h1&gt;
+        &lt;p className="text-xl text-gray-600 mb-8"&gt;Frontend Developer & UI Designer&lt;/p&gt;
+        &lt;p className="text-gray-700 mb-8"&gt;
+          Welcome to my portfolio! I specialize in building beautiful, responsive web applications
+          using modern technologies like React and Tailwind CSS.
+        &lt;/p&gt;
+        &lt;button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"&gt;
+          View My Projects
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Home;</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">Routing Explained</h4>
+                                <p class="text-blue-700">React Router handles navigation between pages without full page reloads. The <code>BrowserRouter</code> component keeps your UI in sync with the URL.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn-secondary prev-step" data-target="step-3">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="btn-primary next-step" data-target="step-5">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 5: Backend Setup -->
+                <div class="trail-card p-8 mb-8" id="step-5" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">5</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Backend Setup</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Now let's create the backend that will handle form submissions from your portfolio.
+                    </p>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Initialize Node.js Project</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">Terminal</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-green-400"><code># Create backend directory
+mkdir portfolio-backend
+cd portfolio-backend
+
+# Initialize Node.js project
+npm init -y
+
+# Install Express and CORS middleware
+npm install express cors
+
+# Create server file
+touch server.js</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Create Express Server</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">server.js</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Contact form route
+app.post('/api/contact', (req, res) => {
+  const { name, email, message } = req.body;
+  
+  // Here you would typically save the message to a database
+  // For this example, we'll just log it and send a response
+  console.log('New message received:');
+  console.log(`Name: ${name}`);
+  console.log(`Email: ${email}`);
+  console.log(`Message: ${message}`);
+  
+  // Send success response
+  res.status(200).json({
+    status: 'success',
+    message: 'Thank you for your message!'
+  });
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="api-flow">
+                        <div class="api-step">
+                            <div class="api-icon bg-blue-100 text-blue-600">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <h4 class="font-bold">Frontend</h4>
+                            <p class="text-sm text-gray-600">Sends form data</p>
+                        </div>
+                        
+                        <div class="api-step">
+                            <div class="api-icon bg-purple-100 text-purple-600">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h4 class="font-bold">API Request</h4>
+                            <p class="text-sm text-gray-600">POST /api/contact</p>
+                        </div>
+                        
+                        <div class="api-step">
+                            <div class="api-icon bg-green-100 text-green-600">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h4 class="font-bold">Backend</h4>
+                            <p class="text-sm text-gray-600">Processes data</p>
+                        </div>
+                        
+                        <div class="api-step">
+                            <div class="api-icon bg-yellow-100 text-yellow-600">
+                                <i class="fas fa-reply"></i>
+                            </div>
+                            <h4 class="font-bold">API Response</h4>
+                            <p class="text-sm text-gray-600">Success message</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn-secondary prev-step" data-target="step-4">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="btn-primary next-step" data-target="step-6">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 6: API Integration -->
+                <div class="trail-card p-8 mb-8" id="step-6" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">6</div>
+                        <h2 class="text-2xl font-bold text-gray-800">API Integration</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Connect your React frontend to the Node.js backend to handle form submissions.
+                    </p>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Update Contact Form</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/components/ContactForm.jsx</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>// Add this import at the top
+import axios from 'axios';
+
+// Inside handleSubmit function
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  
+  try {
+    // Send form data to backend API
+    const response = await axios.post(
+      'http://localhost:5000/api/contact', 
+      formData
+    );
+    
+    if (response.data.status === 'success') {
+      setSubmitStatus({ type: 'success', message: 'Message sent successfully!' });
+      setFormData({ name: '', email: '', message: '' });
+    } else {
+      setSubmitStatus({ type: 'error', message: 'Failed to send message' });
+    }
+  } catch (error) {
+    setSubmitStatus({ 
+      type: 'error', 
+      message: error.response?.data?.message || 'Failed to send message'
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};</code></pre>
+                            <button class="copy-btn">Copy Code</button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">CORS Configuration</h4>
+                                <p class="text-blue-700">We installed the <code>cors</code> middleware to allow our React app (running on port 3000) to communicate with our backend (running on port 5000).</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Testing the Integration</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-5 rounded-xl">
+                            <h4 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+                                <i class="fas fa-check-circle"></i> Frontend Testing
+                            </h4>
+                            <ul class="list-disc list-inside text-green-700">
+                                <li>Fill out the contact form</li>
+                                <li>Submit and verify success message</li>
+                                <li>Check form reset after submission</li>
+                                <li>Test error handling</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-5 rounded-xl">
+                            <h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+                                <i class="fas fa-server"></i> Backend Testing
+                            </h4>
+                            <ul class="list-disc list-inside text-blue-700">
+                                <li>Check server console for received data</li>
+                                <li>Verify response status code is 200</li>
+                                <li>Test with missing form fields</li>
+                                <li>Validate JSON response format</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="btn-secondary prev-step" data-target="step-5">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="btn-primary next-step" data-target="step-7">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 7: Testing & Deployment -->
+                <div class="trail-card p-8 mb-8" id="step-7" style="display: none;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">7</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Testing & Deployment</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Test your complete application and deploy it to make it accessible to the world!
+                    </p>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Testing Checklist</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white border rounded-lg p-5">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-green-500"></i> Frontend Tests
+                            </h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Navigation between pages</li>
+                                <li>Responsive design on all device sizes</li>
+                                <li>Contact form validation</li>
+                                <li>Project card display</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white border rounded-lg p-5">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-green-500"></i> Backend Tests
+                            </h4>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Form submission handling</li>
+                                <li>Error responses for invalid data</li>
+                                <li>CORS configuration</li>
+                                <li>Server stability under load</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Version Control</h3>
+                    
+                    <div class="commit-history mb-8">
+                        <div class="commit">
+                            <div class="commit-hash">a1b2c3d</div>
+                            <div class="commit-message">Initialize React app</div>
+                        </div>
+                        <div class="commit">
+                            <div class="commit-hash">d4e5f6g</div>
+                            <div class="commit-message">Add Navbar component</div>
+                        </div>
+                        <div class="commit">
+                            <div class="commit-hash">h7i8j9k</div>
+                            <div class="commit-message">Create ProjectCard component</div>
+                        </div>
+                        <div class="commit">
+                            <div class="commit-hash">l1m2n3o</div>
+                            <div class="commit-message">Implement contact form</div>
+                        </div>
+                        <div class="commit">
+                            <div class="commit-hash">p4q5r6s</div>
+                            <div class="commit-message">Setup backend API</div>
+                        </div>
+                        <div class="commit">
+                            <div class="commit-hash">t7u8v9w</div>
+                            <div class="commit-message">Connect frontend to backend</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="step-title font-bold text-gray-800 text-lg">Deployment Options</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="deployment-card">
+                            <div class="deployment-logo bg-blue-50">
+                                <i class="fab fa-vercel text-3xl"></i>
+                            </div>
+                            <div class="p-5">
+                                <h4 class="font-bold text-lg mb-2">Vercel</h4>
+                                <p class="text-gray-600 mb-4">Best for React frontends</p>
+                                <button class="btn-primary w-full">Deploy Guide</button>
+                            </div>
+                        </div>
+                        
+                        <div class="deployment-card">
+                            <div class="deployment-logo bg-green-50">
+                                <i class="fab fa-aws text-3xl"></i>
+                            </div>
+                            <div class="p-5">
+                                <h4 class="font-bold text-lg mb-2">AWS</h4>
+                                <p class="text-gray-600 mb-4">For scalable backend</p>
+                                <button class="btn-primary w-full">Deploy Guide</button>
+                            </div>
+                        </div>
+                        
+                        <div class="deployment-card">
+                            <div class="deployment-logo bg-yellow-50">
+                                <i class="fab fa-github text-3xl"></i>
+                            </div>
+                            <div class="p-5">
+                                <h4 class="font-bold text-lg mb-2">GitHub Pages</h4>
+                                <p class="text-gray-600 mb-4">Simple static hosting</p>
+                                <button class="btn-primary w-full">Deploy Guide</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center py-8">
+                        <div class="inline-flex flex-col items-center">
+                            <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                                <i class="fas fa-trophy text-4xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Congratulations!</h3>
+                            <p class="text-gray-600 max-w-xl mx-auto mb-6">
+                                You've successfully built and deployed a complete React portfolio with a Node.js backend. 
+                                You now have a professional portfolio to showcase your work to the world!
+                            </p>
+                            <button class="btn-primary animate-pulse">
+                                <i class="fas fa-download mr-2"></i> Download Certificate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav-floating">
+         <span class="text-sm font-medium mr-2">Next</span>
+        <i class="fas fa-book"></i> 
+    </div>
+
+     <!-- Home Button - Add to your education page template -->
+    <a href="../index.html" class="fixed bottom-6 left-6 z-40">
+    <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Back</span>
+    </button>
+    </a>
+
+
+    <script>
+        // Progress tracking
+        let currentStep = 1;
+        const totalSteps = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            
+            // Update step indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                if (index + 1 <= currentStep) {
+                    indicator.classList.remove('bg-gray-100', 'text-gray-400');
+                    indicator.classList.add('bg-blue-100', 'text-blue-600', 'active-step');
+                } else {
+                    indicator.classList.remove('bg-blue-100', 'text-blue-600', 'active-step');
+                    indicator.classList.add('bg-gray-100', 'text-gray-400');
+                }
+            });
+        }
+        
+        // Show notification
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Copy code functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const codeBlock = button.parentElement.querySelector('code');
+                navigator.clipboard.writeText(codeBlock.textContent);
+                showNotification();
+            });
+        });
+        
+        // Toggle explanations
+        document.querySelectorAll('.toggle-explanation').forEach(button => {
+            button.addEventListener('click', () => {
+                const explanation = button.nextElementSibling;
+                explanation.classList.toggle('open');
+                
+                const icon = button.querySelector('i');
+                if (explanation.classList.contains('open')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('border-blue-600', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-gray-500');
+                });
+                button.classList.add('border-blue-600', 'text-blue-600');
+                button.classList.remove('border-transparent', 'text-gray-500');
+                
+                // Show active tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Navigation between steps
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                
+                // Hide current step
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                
+                // Update current step
+                currentStep = parseInt(targetId.split('-')[1]);
+                
+                // Show next step
+                document.getElementById(targetId).style.display = 'block';
+                
+                // Update progress
+                updateProgress();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                
+                // Hide current step
+                document.getElementById(`step-${currentStep}`).style.display = 'none';
+                
+                // Update current step
+                currentStep = parseInt(targetId.split('-')[1]);
+                
+                // Show previous step
+                document.getElementById(targetId).style.display = 'block';
+                
+                // Update progress
+                updateProgress();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // Initialize
+        updateProgress();
+        
+        // Activate first tab in step 3
+        document.querySelector('[data-tab="navbar-tab"]').click();
+    </script>
+</body>
+</html>

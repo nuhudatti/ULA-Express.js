@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing & Deployment - React Portfolio Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* All previous styles remain unchanged */
+        /* ... (identical to previous page styles) ... */
+         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --code-bg: #fefefe;
+            --code-header: #0f172a;
+            --explanation-bg: #f1f5f9;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --js-color: #f7df1e;
+            --json-color: #f5a623;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            min-height: 100vh;
+            color: #334155;
+        }
+        
+        .trail-container {
+            max-width: 1200px;
+        }
+        
+        .trail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .trail-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 105, 255, 0.1);
+        }
+        
+        .step-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .active-step {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-tabs {
+            background: var(--code-header);
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-tab {
+            padding: 6px 12px;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        
+        .file-tab.active {
+            background: var(--code-bg);
+            opacity: 1;
+        }
+        
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .explanation {
+            background: var(--explanation-bg);
+            border-radius: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        
+        .explanation.open {
+            max-height: 1000px;
+        }
+        
+        .visual-guide {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-radius: 12px;
+            border: 1px dashed #3b82f6;
+        }
+        
+        .nav-floating {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-floating:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #60a5fa);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-title {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .step-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: var(--success);
+        }
+        
+        .setup-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .setup-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .setup-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .setup-item:nth-child(2) .setup-icon {
+            color: var(--success);
+        }
+        
+        .setup-item:nth-child(3) .setup-icon {
+            color: var(--warning);
+        }
+        
+        .setup-item h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .setup-item p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        /* Syntax highlighting */
+        .code-keyword {
+            color: #ff79c6;
+        }
+        
+        .code-function {
+            color: #50fa7b;
+        }
+        
+        .code-jsx-element {
+            color: #8be9fd;
+        }
+        
+        .code-import {
+            color: #bd93f9;
+        }
+        
+        .code-string {
+            color: #f1fa8c;
+        }
+        
+        .code-comment {
+            color: #6272a4;
+        }
+        
+        .code-html-tag {
+            color: #ff79c6;
+        }
+        
+        .code-html-attr {
+            color: #50fa7b;
+        }
+        
+        .code-css-prop {
+            color: #66d9ef;
+        }
+        
+        .code-css-value {
+            color: #a6e22e;
+        }
+        
+        .explanation-line {
+            display: flex;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .explanation-line:last-child {
+            border-bottom: none;
+        }
+        
+        .line-number {
+            min-width: 40px;
+            color: #94a3b8;
+            font-family: monospace;
+            text-align: right;
+            padding-right: 12px;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .line-explanation {
+            padding-left: 12px;
+            flex-grow: 1;
+        }
+        
+        .code-line {
+            display: flex;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .line-num {
+            width: 40px;
+            color: #64748b;
+            text-align: right;
+            padding-right: 15px;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex-grow: 1;
+            padding-right: 15px;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .arch-node {
+            position: relative;
+            padding: 15px;
+            background: #e0f2fe;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .arch-node:before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .arch-children {
+            padding-left: 30px;
+            margin-top: 10px;
+        }
+        
+        .arch-child {
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #94a3b8;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .flow-step {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 40px;
+            width: 80%;
+            z-index: 2;
+        }
+        
+        .flow-step:after {
+            content: "";
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: #cbd5e1;
+        }
+        
+        .flow-step:last-child:after {
+            display: none;
+        }
+        
+        .flow-icon {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .flow-step.client {
+            background: linear-gradient(to right, #dbeafe, #d1e0ff);
+        }
+        
+        .flow-step.server {
+            background: linear-gradient(to right, #dcfce7, #d1fae5);
+        }
+        
+        .flow-step.database {
+            background: linear-gradient(to right, #fef3c7, #fde68a);
+        }
+        
+        .api-request {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .api-header {
+            background: #1e293b;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .api-method {
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .api-url {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .api-body {
+            padding: 15px;
+            background: #f8fafc;
+        }
+        
+        .json-block {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        
+        .json-key {
+            color: #f1fa8c;
+        }
+        
+        .json-string {
+            color: #a3e635;
+        }
+        
+        .json-number {
+            color: #60a5fa;
+        }
+        
+        .endpoint-test {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Additional styles specific to testing section */
+        .test-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .unit-test { background: #e0f2fe; color: #0c4a6e; }
+        .integration-test { background: #dcfce7; color: #166534; }
+        .e2e-test { background: #fef3c7; color: #854d0e; }
+        
+        .deploy-flow {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .deploy-flow:before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+        
+        .deploy-step {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            width: 22%;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .deploy-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        .deploy-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 30px;
+        }
+        
+        .deploy-step:nth-child(2) .deploy-icon {
+            background: #10b981;
+        }
+        
+        .deploy-step:nth-child(3) .deploy-icon {
+            background: #8b5cf6;
+        }
+        
+        .deploy-step:nth-child(4) .deploy-icon {
+            background: #ec4899;
+        }
+        
+        .ci-cd-flow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .ci-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .cd-step {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .status-pill {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .status-success { background: #dcfce7; color: #166534; }
+        .status-warning { background: #fef3c7; color: #854d0e; }
+        .status-error { background: #fee2e2; color: #b91c1c; }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="trail-container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🚀 Testing & Deployment</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Test your application thoroughly and deploy to production</p>
+            
+            <div class="mt-8 inline-flex items-center bg-purple-50 rounded-full py-2 px-6">
+                <div class="bg-purple-100 p-2 rounded-full mr-3">
+                    <i class="fas fa-rocket text-purple-600"></i>
+                </div>
+                <p class="text-purple-700 font-medium">Learn professional deployment strategies</p>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Progress sidebar -->
+            <div class="lg:col-span-1">
+                <div class="trail-card p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Learning Trail Progress</h2>
+                    
+                    <div class="progress-bar mb-6">
+                        <div class="progress-fill" style="width: 100%;" id="progress-fill"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="./porfolio_overview.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                            <div class="font-medium text-gray-500">Project Overview</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_fsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                            <div class="font-medium text-gray-500">Frontend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_component.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                            <div class="font-medium text-gray-500">Building Components</div>
+                        </div>
+                        </a>
+                        <a href="./porforlio_pages.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                            <div class="font-medium text-gray-500">Routing & Pages</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_bsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">5</div>
+                            <div class="font-medium text-gray-500">Backend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_api.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">6</div>
+                            <div class="font-medium text-gray-500">API Integration</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_testing.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600 active-step">7</div>
+                            <div class="font-medium">Testing & Deployment</div>
+                        </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Deployment Stack</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Vercel</span>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Heroku</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">GitHub Actions</span>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Jest</span>
+                            <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Cypress</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Deployment Checklist</h3>
+                        <div class="space-y-2">
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Tests passing</div>
+                                    <div class="text-xs text-gray-500">All unit and integration tests</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Production build</div>
+                                    <div class="text-xs text-gray-500">Optimized for performance</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-sync-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">CI/CD configured</div>
+                                    <div class="text-xs text-gray-500">Automated deployment</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="lg:col-span-3">
+                <!-- Introduction -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600 active-step">7</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Testing & Deployment Guide</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Before deploying your portfolio to production, we'll ensure it's thoroughly tested. Then we'll deploy both frontend and backend using industry best practices.
+                    </p>
+                    
+                    <div class="setup-diagram">
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-vial text-blue-500"></i>
+                            </div>
+                            <h3>Testing</h3>
+                            <p>Unit, Integration, E2E</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-cogs text-green-500"></i>
+                            </div>
+                            <h3>Build</h3>
+                            <p>Optimized production build</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-cloud-upload-alt text-purple-500"></i>
+                            </div>
+                            <h3>Deployment</h3>
+                            <p>Vercel + Heroku</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-sync-alt text-yellow-500"></i>
+                            </div>
+                            <h3>CI/CD</h3>
+                            <p>Automated workflows</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Testing Strategies -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Testing Strategies</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Implement a comprehensive testing strategy to catch bugs before they reach production.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+                                <span class="test-badge unit-test">Unit</span>
+                                Component Tests
+                            </h3>
+                            <p class="text-blue-700">Test individual components in isolation.</p>
+                            <div class="code-block mt-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Button.test.js</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>import { render, screen } from '@testing-library/react';
+import Button from './Button';
+
+test('renders button with text', () => {
+  render(&lt;Button&gt;Click Me&lt;/Button&gt;);
+  const button = screen.getByText(/click me/i);
+  expect(button).toBeInTheDocument();
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-green-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-green-800 mb-3 flex items-center gap-2">
+                                <span class="test-badge integration-test">Integration</span>
+                                API Tests
+                            </h3>
+                            <p class="text-green-700">Test frontend-backend interactions.</p>
+                            <div class="code-block mt-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">api.test.js</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>import { sendContactForm } from './api';
+import axios from 'axios';
+
+jest.mock('axios');
+
+test('sends contact form successfully', async () => {
+  axios.post.mockResolvedValue({ data: { success: true } });
+  const response = await sendContactForm({ name: 'John', email: 'test@test.com' });
+  expect(response.success).toBe(true);
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-yellow-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-yellow-800 mb-3 flex items-center gap-2">
+                                <span class="test-badge e2e-test">E2E</span>
+                                User Flow Tests
+                            </h3>
+                            <p class="text-yellow-700">Test complete user journeys.</p>
+                            <div class="code-block mt-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">contact.cy.js</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>describe('Contact Form', () => {
+  it('submits form successfully', () => {
+    cy.visit('/contact');
+    cy.get('#name').type('John Doe');
+    cy.get('#email').type('john@example.com');
+    cy.get('#message').type('Hello world!');
+    cy.get('button[type="submit"]').click();
+    cy.contains('Message sent successfully').should('be.visible');
+  });
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                        <div class="flex items-start gap-3">
+                            <div class="text-purple-500 text-xl">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-purple-800 mb-1">Testing Pyramid</h4>
+                                <p class="text-purple-700">Follow the testing pyramid principle: lots of unit tests, fewer integration tests, and even fewer end-to-end tests.</p>
+                                <div class="mt-3 flex justify-between max-w-md">
+                                    <div class="text-center">
+                                        <div class="bg-blue-500 w-12 h-12 rounded-full flex items-center justify-center mx-auto">
+                                            <span class="text-white font-bold">70%</span>
+                                        </div>
+                                        <p class="text-sm mt-2">Unit Tests</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center mx-auto">
+                                            <span class="text-white font-bold">20%</span>
+                                        </div>
+                                        <p class="text-sm mt-2">Integration</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="bg-yellow-500 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
+                                            <span class="text-white font-bold">10%</span>
+                                        </div>
+                                        <p class="text-sm mt-2">E2E</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Build Optimization -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Build Optimization</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Create optimized production builds for both frontend and backend.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Frontend Build</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Terminal</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-green-400"><code># Create optimized production build
+npm run build
+
+# Output will be in /build directory
+# Size: ~100-300 KB (gzipped)</code></pre>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">React creates highly optimized static files ready for deployment.</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Backend Build</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">package.json</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>{
+  "scripts": {
+    "start": "node server.js",
+    "build": "npm install --only=production"
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">Install only production dependencies to reduce size and attack surface.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">Performance Tips</h4>
+                                <ul class="list-disc pl-5 mt-2 text-blue-700">
+                                    <li>Use React.lazy for code splitting</li>
+                                    <li>Compress images with tools like Squoosh</li>
+                                    <li>Enable Gzip/Brotli compression on server</li>
+                                    <li>Set proper caching headers for static assets</li>
+                                    <li>Minify and bundle your JavaScript</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Deployment -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Deployment Process</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Deploy your frontend and backend to modern hosting platforms.
+                    </p>
+                    
+                    <div class="deploy-flow">
+                        <div class="deploy-step">
+                            <div class="deploy-icon">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Push to GitHub</h3>
+                            <p class="text-gray-700">Commit and push your code to repository</p>
+                        </div>
+                        
+                        <div class="deploy-step">
+                            <div class="deploy-icon">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Frontend to Vercel</h3>
+                            <p class="text-gray-700">Connect repo, deploy automatically</p>
+                        </div>
+                        
+                        <div class="deploy-step">
+                            <div class="deploy-icon">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Backend to Heroku</h3>
+                            <p class="text-gray-700">Connect repo, configure environment</p>
+                        </div>
+                        
+                        <div class="deploy-step">
+                            <div class="deploy-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Go Live!</h3>
+                            <p class="text-gray-700">Your portfolio is live on the web</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Vercel Configuration</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">vercel.json</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Heroku Configuration</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Procfile</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-gray-800"><code>web: node server.js</code></pre>
+                                </div>
+                            </div>
+                            <div class="code-block">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Terminal</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-green-400"><code># Create Heroku app
+heroku create your-portfolio-backend
+
+# Set environment variables
+heroku config:set PORT=5000 NODE_ENV=production
+
+# Deploy
+git push heroku main</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: CI/CD -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">CI/CD Pipeline</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Set up Continuous Integration and Continuous Deployment to automate your workflow.
+                    </p>
+                    
+                    <div class="ci-cd-flow">
+                        <div class="ci-step">
+                            <h3 class="font-bold text-lg mb-4 text-blue-700">
+                                <i class="fas fa-sync-alt mr-2"></i> Continuous Integration
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Run tests on every push</div>
+                                        <div class="text-sm text-gray-600">Prevent broken code from being deployed</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Code quality checks</div>
+                                        <div class="text-sm text-gray-600">ESLint, Prettier, TypeScript validation</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Build verification</div>
+                                        <div class="text-sm text-gray-600">Ensure production builds complete successfully</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="cd-step">
+                            <h3 class="font-bold text-lg mb-4 text-green-700">
+                                <i class="fas fa-rocket mr-2"></i> Continuous Deployment
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Automatic deployments</div>
+                                        <div class="text-sm text-gray-600">On successful CI and merge to main</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Preview deployments</div>
+                                        <div class="text-sm text-gray-600">For pull requests</div>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                    <div>
+                                        <div class="font-medium">Rollback capability</div>
+                                        <div class="text-sm text-gray-600">Quickly revert to previous version if needed</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="code-block mt-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">.github/workflows/deploy.yml</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-gray-800"><code>name: Deploy Portfolio
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - run: npm ci
+      - run: npm run test
+      
+  deploy-frontend:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          
+  deploy-backend:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "your-portfolio-backend"
+          heroku_email: "your-email@example.com"</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 5: Post-Deployment -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">5</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Post-Deployment Checks</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        After deployment, verify everything is working correctly in production.
+                    </p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 text-left">Check</th>
+                                    <th class="py-3 px-4 text-left">Tool</th>
+                                    <th class="py-3 px-4 text-left">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="py-3 px-4">Website loading</td>
+                                    <td class="py-3 px-4">Browser</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-success">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">Contact form functionality</td>
+                                    <td class="py-3 px-4">Manual test</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-success">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">Performance audit</td>
+                                    <td class="py-3 px-4">Lighthouse</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-warning">Needs improvement</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">Mobile responsiveness</td>
+                                    <td class="py-3 px-4">Chrome DevTools</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-success">Success</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">Console errors</td>
+                                    <td class="py-3 px-4">Browser Console</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-error">Errors found</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4">Security headers</td>
+                                    <td class="py-3 px-4">SecurityHeaders.com</td>
+                                    <td class="py-3 px-4"><span class="status-pill status-success">Success</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Monitoring Tools</h3>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>Google Analytics - Traffic analysis</li>
+                                <li>Sentry - Error tracking</li>
+                                <li>LogRocket - Session replay</li>
+                                <li>UptimeRobot - Availability monitoring</li>
+                                <li>Google Search Console - SEO performance</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Performance Tools</h3>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>Lighthouse - Comprehensive audits</li>
+                                <li>WebPageTest - Detailed performance metrics</li>
+                                <li>GTmetrix - Real browser testing</li>
+                                <li>Pingdom - Speed test from multiple locations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Completion -->
+                <div class="trail-card p-8">
+                    <div class="text-center py-8">
+                        <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 text-green-500 mb-6">
+                            <i class="fas fa-check text-4xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Congratulations! 🎉</h2>
+                        <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+                            You've successfully built, tested, and deployed your React portfolio! You now have a professional online presence.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                            <div class="bg-blue-50 p-5 rounded-xl">
+                                <h3 class="font-bold text-blue-800 text-lg mb-3">Frontend</h3>
+                                <div class="text-4xl font-bold text-blue-600">Vercel</div>
+                                <p class="mt-2">https://your-portfolio.vercel.app</p>
+                            </div>
+                            
+                            <div class="bg-purple-50 p-5 rounded-xl">
+                                <h3 class="font-bold text-purple-800 text-lg mb-3">Backend</h3>
+                                <div class="text-4xl font-bold text-purple-600">Heroku</div>
+                                <p class="mt-2">https://your-portfolio-backend.herokuapp.com</p>
+                            </div>
+                            
+                            <div class="bg-green-50 p-5 rounded-xl">
+                                <h3 class="font-bold text-green-800 text-lg mb-3">Repository</h3>
+                                <div class="text-4xl font-bold text-green-600">GitHub</div>
+                                <p class="mt-2">github.com/yourname/portfolio</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center gap-4">
+                            <a href="#" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:from-blue-700 hover:to-indigo-700 transition inline-flex items-center">
+                                <i class="fab fa-github mr-2"></i> View Source Code
+                            </a>
+                            <a href="#" class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:from-green-700 hover:to-emerald-700 transition inline-flex items-center">
+                                <i class="fas fa-external-link-alt mr-2"></i> Visit Live Site
+                            </a>
+                        </div>
+                        
+                        <div class="mt-12 pt-8 border-t border-gray-200">
+                            <h3 class="text-xl font-bold text-gray-800 mb-4">What to Learn Next</h3>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">TypeScript</a>
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">State Management</a>
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">Authentication</a>
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">Database Integration</a>
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">Serverless Functions</a>
+                                <a href="#" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium">GraphQL</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- <div class="nav-floating">
+        <i class="fas fa-home mr-2"></i> Visit Your Portfolio
+    </div> -->
+
+     <!-- Home Button - Add to your education page template -->
+    <a href="../index.html" class="fixed bottom-6 left-6 z-40">
+    <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Back</span>
+    </button>
+    </a>
+
+    <script>
+        // Progress tracking - 100% complete
+        let currentStep = 7;
+        const totalSteps = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        // Toggle explanations
+        document.querySelectorAll('.toggle-explanation').forEach(button => {
+            button.addEventListener('click', () => {
+                const explanation = button.nextElementSibling;
+                explanation.classList.toggle('open');
+                
+                const icon = button.querySelector('i');
+                if (explanation.classList.contains('open')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                    button.textContent = button.textContent.replace('Show', 'Hide');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                    button.textContent = button.textContent.replace('Hide', 'Show');
+                }
+            });
+        });
+        
+        // Initialize
+        updateProgress();
+        
+        // Add pulse animation to completion badge
+        const completionBadge = document.querySelector('.fa-check');
+        setInterval(() => {
+            completionBadge.classList.toggle('animate-pulse');
+        }, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Setup - React Portfolio Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --code-bg: #1e293b;
+            --code-header: #0f172a;
+            --explanation-bg: #f1f5f9;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --js-color: #f7df1e;
+            --json-color: #f5a623;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            min-height: 100vh;
+            color: #334155;
+        }
+        
+        .trail-container {
+            max-width: 1200px;
+        }
+        
+        .trail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .trail-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 105, 255, 0.1);
+        }
+        
+        .step-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .active-step {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-tabs {
+            background: var(--code-header);
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-tab {
+            padding: 6px 12px;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        
+        .file-tab.active {
+            background: var(--code-bg);
+            opacity: 1;
+        }
+        
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .explanation {
+            background: var(--explanation-bg);
+            border-radius: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        
+        .explanation.open {
+            max-height: 1000px;
+        }
+        
+        .visual-guide {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-radius: 12px;
+            border: 1px dashed #3b82f6;
+        }
+        
+        .nav-floating {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-floating:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #60a5fa);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-title {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .step-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: var(--success);
+        }
+        
+        .setup-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .setup-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .setup-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .setup-item:nth-child(2) .setup-icon {
+            color: var(--success);
+        }
+        
+        .setup-item:nth-child(3) .setup-icon {
+            color: var(--warning);
+        }
+        
+        .setup-item h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .setup-item p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        /* Syntax highlighting */
+        .code-keyword {
+            color: #ff79c6;
+        }
+        
+        .code-function {
+            color: #50fa7b;
+        }
+        
+        .code-jsx-element {
+            color: #8be9fd;
+        }
+        
+        .code-import {
+            color: #bd93f9;
+        }
+        
+        .code-string {
+            color: #f1fa8c;
+        }
+        
+        .code-comment {
+            color: #6272a4;
+        }
+        
+        .code-html-tag {
+            color: #ff79c6;
+        }
+        
+        .code-html-attr {
+            color: #50fa7b;
+        }
+        
+        .code-css-prop {
+            color: #66d9ef;
+        }
+        
+        .code-css-value {
+            color: #a6e22e;
+        }
+        
+        .explanation-line {
+            display: flex;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .explanation-line:last-child {
+            border-bottom: none;
+        }
+        
+        .line-number {
+            min-width: 40px;
+            color: #94a3b8;
+            font-family: monospace;
+            text-align: right;
+            padding-right: 12px;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .line-explanation {
+            padding-left: 12px;
+            flex-grow: 1;
+        }
+        
+        .code-line {
+            display: flex;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .line-num {
+            width: 40px;
+            color: #64748b;
+            text-align: right;
+            padding-right: 15px;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex-grow: 1;
+            padding-right: 15px;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .arch-node {
+            position: relative;
+            padding: 15px;
+            background: #e0f2fe;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .arch-node:before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .arch-children {
+            padding-left: 30px;
+            margin-top: 10px;
+        }
+        
+        .arch-child {
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #94a3b8;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .flow-step {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin-bottom: 40px;
+            width: 80%;
+            z-index: 2;
+        }
+        
+        .flow-step:after {
+            content: "";
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 40px;
+            background: #cbd5e1;
+        }
+        
+        .flow-step:last-child:after {
+            display: none;
+        }
+        
+        .flow-icon {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .flow-step.client {
+            background: linear-gradient(to right, #dbeafe, #d1e0ff);
+        }
+        
+        .flow-step.server {
+            background: linear-gradient(to right, #dcfce7, #d1fae5);
+        }
+        
+        .flow-step.database {
+            background: linear-gradient(to right, #fef3c7, #fde68a);
+        }
+        
+        .api-request {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .api-header {
+            background: #1e293b;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .api-method {
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .api-url {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .api-body {
+            padding: 15px;
+            background: #f8fafc;
+        }
+        
+        .json-block {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+        
+        .json-key {
+            color: #f1fa8c;
+        }
+        
+        .json-string {
+            color: #a3e635;
+        }
+        
+        .json-number {
+            color: #60a5fa;
+        }
+        
+        .endpoint-test {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="trail-container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🚀 Backend Setup</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Create a Node.js/Express server to handle your portfolio's contact form submissions</p>
+            
+            <div class="mt-8 inline-flex items-center bg-blue-50 rounded-full py-2 px-6">
+                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                    <i class="fas fa-server text-blue-600"></i>
+                </div>
+                <p class="text-blue-700 font-medium">Build a robust backend API with zero third-party dependencies</p>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Progress sidebar -->
+            <div class="lg:col-span-1">
+                <div class="trail-card p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Learning Trail Progress</h2>
+                    
+                    <div class="progress-bar mb-6">
+                        <div class="progress-fill" style="width: 50%;" id="progress-fill"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="./porfolio_overview.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                            <div class="font-medium text-gray-500">Project Overview</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_fsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                            <div class="font-medium text-gray-500">Frontend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_component.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                            <div class="font-medium text-gray-500">Building Components</div>
+                        </div>
+                        </a>
+                        <a href="./porforlio_pages.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                            <div class="font-medium text-gray-500">Routing & Pages</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_bsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600 active-step">5</div>
+                            <div class="font-medium">Backend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_api.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">6</div>
+                            <div class="text-gray-500">API Integration</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_testing.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">7</div>
+                            <div class="text-gray-500">Testing & Deployment</div>
+                        </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Backend Stack</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm">Node.js</span>
+                            <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">Express</span>
+                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">CORS</span>
+                            <span class="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm">Nodemon</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Setup Checklist</h3>
+                        <div class="space-y-2">
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Node.js installed</div>
+                                    <div class="text-xs text-gray-500">Version 16+ required</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Terminal access</div>
+                                    <div class="text-xs text-gray-500">Command Prompt or Terminal</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-sync-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Backend directory</div>
+                                    <div class="text-xs text-gray-500">portfolio-backend</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="lg:col-span-3">
+                <!-- Introduction -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600 active-step">5</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Backend Setup Guide</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We'll create a Node.js server with Express to handle contact form submissions from your portfolio. 
+                        This backend will receive form data, process it, and send a response back to the frontend.
+                    </p>
+                    
+                    <div class="setup-diagram">
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <h3>Node.js</h3>
+                            <p>JavaScript runtime environment</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h3>Express</h3>
+                            <p>Web framework for Node.js</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h3>CORS</h3>
+                            <p>Cross-Origin Resource Sharing</p>
+                        </div>
+                    </div>
+                    
+                    <div class="architecture-diagram mt-8">
+                        <h3 class="font-bold text-gray-800 text-lg mb-4">Backend Architecture</h3>
+                        <div class="arch-node">
+                            <div class="font-bold">Express Server</div>
+                            <div class="text-sm text-gray-600">Handles HTTP requests and responses</div>
+                            
+                            <div class="arch-children">
+                                <div class="arch-child">Middleware Setup (CORS, JSON parsing)</div>
+                                <div class="arch-child">API Endpoint: POST /api/contact</div>
+                                <div class="arch-children">
+                                    <div class="arch-child">Receives form data</div>
+                                    <div class="arch-child">Validates input</div>
+                                    <div class="arch-child">Saves to file (optional)</div>
+                                    <div class="arch-child">Sends response</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Create Backend Project -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Create Backend Project</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        First, we'll create a new directory for our backend and initialize it as a Node.js project.
+                    </p>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">Terminal</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-green-400"><code># Create backend directory
+mkdir portfolio-backend
+cd portfolio-backend
+
+# Initialize Node.js project
+npm init -y
+
+# Create server entry point
+touch server.js</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">Project Structure</h4>
+                                <p class="text-blue-700">Your backend directory should now contain:</p>
+                                <ul class="list-disc pl-5 mt-2">
+                                    <li><code>package.json</code> - Project configuration</li>
+                                    <li><code>server.js</code> - Main server file</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Install Dependencies -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Install Dependencies</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We need to install Express and CORS middleware to handle HTTP requests and enable cross-origin requests.
+                    </p>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">Terminal</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-green-400"><code># Install Express and CORS
+npm install express cors
+
+# Install Nodemon for development (optional)
+npm install --save-dev nodemon</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="bg-emerald-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-emerald-800 flex items-center gap-2">
+                                <i class="fas fa-bolt text-emerald-600"></i>
+                                Express
+                            </h4>
+                            <p class="text-emerald-700 mt-2">Minimalist web framework for Node.js</p>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-indigo-800 flex items-center gap-2">
+                                <i class="fas fa-shield-alt text-indigo-600"></i>
+                                CORS
+                            </h4>
+                            <p class="text-indigo-700 mt-2">Middleware to enable cross-origin requests</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-amber-800 flex items-center gap-2">
+                                <i class="fas fa-sync-alt text-amber-600"></i>
+                                Nodemon
+                            </h4>
+                            <p class="text-amber-700 mt-2">Automatically restarts server during development</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Create Server File -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Create Server File</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Let's create the main server file that will handle our API requests.
+                    </p>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">server.js</div>
+                        </div>
+                        <div class="code-content">
+                            <div class="code-line">
+                                <div class="line-num">1</div>
+                                <div class="line-content"><span class="code-keyword">const</span> <span class="code-jsx-element">express</span> = <span class="code-function">require</span>(<span class="code-string">'express'</span>);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">2</div>
+                                <div class="line-content"><span class="code-keyword">const</span> <span class="code-jsx-element">cors</span> = <span class="code-function">require</span>(<span class="code-string">'cors'</span>);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">3</div>
+                                <div class="line-content"><span class="code-keyword">const</span> <span class="code-jsx-element">fs</span> = <span class="code-function">require</span>(<span class="code-string">'fs'</span>); <span class="code-comment">// For file storage (optional)</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">4</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">5</div>
+                                <div class="line-content"><span class="code-keyword">const</span> <span class="code-jsx-element">app</span> = <span class="code-function">express</span>();</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">6</div>
+                                <div class="line-content"><span class="code-keyword">const</span> <span class="code-jsx-element">PORT</span> = <span class="code-jsx-element">process</span>.<span class="code-jsx-element">env</span>.<span class="code-jsx-element">PORT</span> || <span class="code-number">5000</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">7</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">8</div>
+                                <div class="line-content"><span class="code-comment">// Middleware</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">9</div>
+                                <div class="line-content"><span class="code-jsx-element">app</span>.<span class="code-function">use</span>(<span class="code-function">cors</span>()); <span class="code-comment">// Enable CORS</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">10</div>
+                                <div class="line-content"><span class="code-jsx-element">app</span>.<span class="code-function">use</span>(<span class="code-jsx-element">express</span>.<span class="code-function">json</span>()); <span class="code-comment">// Parse JSON bodies</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">11</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">12</div>
+                                <div class="line-content"><span class="code-comment">// API endpoint for contact form</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">13</div>
+                                <div class="line-content"><span class="code-jsx-element">app</span>.<span class="code-function">post</span>(<span class="code-string">'/api/contact'</span>, (<span class="code-jsx-element">req</span>, <span class="code-jsx-element">res</span>) => {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">14</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">const</span> { <span class="code-jsx-element">name</span>, <span class="code-jsx-element">email</span>, <span class="code-jsx-element">message</span> } = <span class="code-jsx-element">req</span>.<span class="code-jsx-element">body</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">15</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">16</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-comment">// Basic validation</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">17</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">if</span> (!name || !email || !message) {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">18</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-jsx-element">res</span>.<span class="code-function">status</span>(<span class="code-number">400</span>).<span class="code-function">json</span>({ <span class="code-jsx-element">error</span>: <span class="code-string">'All fields are required'</span> });</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">19</div>
+                                <div class="line-content">&nbsp;&nbsp;}</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">20</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">21</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-comment">// Save to file (optional)</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">22</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-jsx-element">newContact</span> = {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">23</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">name</span>,</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">24</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">email</span>,</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">25</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">message</span>,</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">26</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">date</span>: <span class="code-keyword">new</span> <span class="code-jsx-element">Date</span>()</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">27</div>
+                                <div class="line-content">&nbsp;&nbsp;};</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">28</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">29</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-jsx-element">fs</span>.<span class="code-function">readFile</span>(<span class="code-string">'contacts.json'</span>, <span class="code-string">'utf8'</span>, (<span class="code-jsx-element">err</span>, <span class="code-jsx-element">data</span>) => {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">30</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-jsx-element">contacts</span> = <span class="code-jsx-element">JSON</span>.<span class="code-function">parse</span>(<span class="code-jsx-element">data</span> || <span class="code-string">'[]'</span>);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">31</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">contacts</span>.<span class="code-function">push</span>(<span class="code-jsx-element">newContact</span>);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">32</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">fs</span>.<span class="code-function">writeFile</span>(<span class="code-string">'contacts.json'</span>, <span class="code-jsx-element">JSON</span>.<span class="code-function">stringify</span>(<span class="code-jsx-element">contacts</span>, <span class="code-keyword">null</span>, <span class="code-number">2</span>), () => {});</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">33</div>
+                                <div class="line-content">&nbsp;&nbsp;});</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">34</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">35</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-comment">// Send success response</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">36</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-jsx-element">res</span>.<span class="code-function">json</span>({</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">37</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">status</span>: <span class="code-string">'success'</span>,</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">38</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">message</span>: <span class="code-string">'Thanks for reaching out!'</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">39</div>
+                                <div class="line-content">&nbsp;&nbsp;});</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">40</div>
+                                <div class="line-content">});</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">41</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">42</div>
+                                <div class="line-content"><span class="comment">// Start server</span></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">43</div>
+                                <div class="line-content"><span class="code-jsx-element">app</span>.<span class="code-function">listen</span>(<span class="code-jsx-element">PORT</span>, () => {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">44</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-jsx-element">console</span>.<span class="code-function">log</span>(<span class="code-string">`Server running on http://localhost:<span class="code-highlight">${PORT}</span>`</span>);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">45</div>
+                                <div class="line-content">});</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="toggle-explanation w-full bg-blue-50 text-blue-700 font-medium py-3 rounded-lg mb-6">
+                        <i class="fas fa-chevron-down mr-2"></i> Show Line-by-Line Explanation
+                    </button>
+                    
+                    <div class="explanation mb-6">
+                        <div class="p-4">
+                            <div class="explanation-line">
+                                <div class="line-number">1-3</div>
+                                <div class="line-explanation">Import required modules: Express, CORS, and File System</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">5</div>
+                                <div class="line-explanation">Create Express application instance</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">6</div>
+                                <div class="line-explanation">Set port number (5000 by default)</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">9-10</div>
+                                <div class="line-explanation">Configure middleware: CORS for cross-origin requests, JSON parser for request bodies</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">13</div>
+                                <div class="line-explanation">Define POST endpoint for contact form submissions</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">14</div>
+                                <div class="line-explanation">Destructure form data from request body</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">17-19</div>
+                                <div class="line-explanation">Basic validation - ensure all fields are provided</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">22-27</div>
+                                <div class="line-explanation">Create contact object with timestamp</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">29-33</div>
+                                <div class="line-explanation">Save contact to JSON file (optional)</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">36-39</div>
+                                <div class="line-explanation">Send success response to client</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">43-45</div>
+                                <div class="line-explanation">Start the server on specified port</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Start the Server -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Start the Server</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Now that our server is set up, let's start it and test our API endpoint.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Start with Node.js</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Terminal</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-green-400"><code>node server.js</code></pre>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">Server will run at http://localhost:5000</p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Start with Nodemon (recommended)</h3>
+                            <div class="code-block mb-4">
+                                <div class="file-tabs">
+                                    <div class="file-tab active">Terminal</div>
+                                </div>
+                                <div class="code-content">
+                                    <pre class="text-green-400"><code>npx nodemon server.js</code></pre>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">Automatically restarts server when files change</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-green-500 text-xl">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-green-800 mb-1">Server Running!</h4>
+                                <p class="text-green-700">You should see "Server running on http://localhost:5000" in your terminal. Your backend is now ready to receive requests.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- API Documentation -->
+                <div class="trail-card p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">API Documentation</h2>
+                    
+                    <div class="api-request mb-8">
+                        <div class="api-header">
+                            <div class="api-method">POST</div>
+                            <div class="api-url">/api/contact</div>
+                        </div>
+                        <div class="api-body">
+                            <h3 class="font-bold text-gray-800 mb-3">Request Body (JSON)</h3>
+                            <div class="json-block">
+                                {<br>
+                                &nbsp;&nbsp;<span class="json-key">"name"</span>: <span class="json-string">"John Doe"</span>,<br>
+                                &nbsp;&nbsp;<span class="json-key">"email"</span>: <span class="json-string">"john@example.com"</span>,<br>
+                                &nbsp;&nbsp;<span class="json-key">"message"</span>: <span class="json-string">"Hello, I love your portfolio!"</span><br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Success Response</h3>
+                            <div class="json-block">
+                                {<br>
+                                &nbsp;&nbsp;<span class="json-key">"status"</span>: <span class="json-string">"success"</span>,<br>
+                                &nbsp;&nbsp;<span class="json-key">"message"</span>: <span class="json-string">"Thanks for reaching out!"</span><br>
+                                }
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 mb-3">Error Response</h3>
+                            <div class="json-block">
+                                {<br>
+                                &nbsp;&nbsp;<span class="json-key">"error"</span>: <span class="json-string">"All fields are required"</span><br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-test mt-8">
+                        <h3 class="font-bold text-gray-800 mb-4">Test Your Endpoint</h3>
+                        <p class="text-gray-700 mb-4">You can test your API using tools like Postman, Thunder Client (VSCode extension), or curl:</p>
+                        
+                        <div class="code-block mb-4">
+                            <div class="file-tabs">
+                                <div class="file-tab active">curl</div>
+                            </div>
+                            <div class="code-content">
+                                <pre class="text-green-400"><code>curl -X POST http://localhost:5000/api/contact \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John", "email":"john@test.com", "message":"Test message"}'</code></pre>
+                            </div>
+                        </div>
+                        
+                        <button class="test-btn">
+                            <i class="fas fa-bolt mr-2"></i> Test in Postman
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Data Storage -->
+                <div class="trail-card p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Data Storage (Optional)</h2>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Our implementation includes saving messages to a <code>contacts.json</code> file. Here's how it works:
+                    </p>
+                    
+                    <div class="flow-diagram">
+                        <div class="flow-step client">
+                            <div class="flow-icon">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Client Submits Form</h3>
+                            <p class="text-gray-700">Frontend sends POST request with form data</p>
+                        </div>
+                        
+                        <div class="flow-step server">
+                            <div class="flow-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Server Processes Request</h3>
+                            <p class="text-gray-700">Validates data and adds to contacts array</p>
+                        </div>
+                        
+                        <div class="flow-step database">
+                            <div class="flow-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">Save to File</h3>
+                            <p class="text-gray-700">Writes contacts array to contacts.json</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg mt-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-amber-500 text-xl">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-800 mb-1">Note on File Storage</h4>
+                                <p class="text-amber-700">File-based storage is suitable for development and small projects. For production use, consider using a database like MongoDB or PostgreSQL.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="trail-card p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">What's Next?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-emerald-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-emerald-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-600"></i>
+                                What We've Built
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-emerald-500 mt-1"></i>
+                                    <span>Node.js/Express server</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-emerald-500 mt-1"></i>
+                                    <span>API endpoint for contact form</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-emerald-500 mt-1"></i>
+                                    <span>Data validation</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-emerald-500 mt-1"></i>
+                                    <span>File-based storage (optional)</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-indigo-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-indigo-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-arrow-right text-indigo-600"></i>
+                                Next Steps
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-plug text-indigo-500 mt-1"></i>
+                                    <span>Connect frontend to backend API</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-spinner text-indigo-500 mt-1"></i>
+                                    <span>Add loading states and error handling</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-shield-alt text-indigo-500 mt-1"></i>
+                                    <span>Implement form validation</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-rocket text-indigo-500 mt-1"></i>
+                                    <span>Deploy your full-stack application</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <a href="./porfolio_api.html" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:from-indigo-700 hover:to-purple-700 transition">
+                            Continue to API Integration <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="./porfolio_api.html">
+    <div class="nav-floating">
+         <span class="text-sm font-medium mr-2">Next</span>
+        <i class="fas fa-arrow-right mr-2"></i>
+    </div>
+    </a>
+
+     <!-- Home Button - Add to your education page template -->
+    <a href="../index.html" class="fixed bottom-6 left-6 z-40">
+    <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Back</span>
+    </button>
+    </a>
+
+
+    <script>
+        // Progress tracking
+        let currentStep = 5;
+        const totalSteps = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        // Toggle explanations
+        document.querySelectorAll('.toggle-explanation').forEach(button => {
+            button.addEventListener('click', () => {
+                const explanation = button.nextElementSibling;
+                explanation.classList.toggle('open');
+                
+                const icon = button.querySelector('i');
+                if (explanation.classList.contains('open')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                    button.textContent = button.textContent.replace('Show', 'Hide');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                    button.textContent = button.textContent.replace('Hide', 'Show');
+                }
+            });
+        });
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

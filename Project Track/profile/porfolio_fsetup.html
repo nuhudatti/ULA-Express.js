@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Setup - React Portfolio Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'code-bg': '#1e293b',
+                        'code-header': '#0f172a',
+                        'explanation-bg': '#f1f5f9',
+                        'primary': '#3b82f6',
+                        'primary-dark': '#2563eb',
+                        'success': '#10b981',
+                        'warning': '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            min-height: 100vh;
+        }
+        
+        .trail-container {
+            max-width: 1200px;
+        }
+        
+        .trail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .trail-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 105, 255, 0.1);
+        }
+        
+        .step-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .active-step {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .code-block {
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-tabs {
+            background: #0f172a;
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-tab {
+            padding: 6px 12px;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        
+        .file-tab.active {
+            background: #1e293b;
+            opacity: 1;
+        }
+        
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .explanation {
+            background: #f1f5f9;
+            border-radius: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        
+        .explanation.open {
+            max-height: 500px;
+        }
+        
+        .folder-structure {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .file-item {
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .file-item::before {
+            content: "📄";
+            position: absolute;
+            left: 0;
+        }
+        
+        .folder {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        
+        .folder::before {
+            content: "📁";
+            position: absolute;
+            left: 0;
+        }
+        
+        .visual-guide {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-radius: 12px;
+            border: 1px dashed #3b82f6;
+        }
+        
+        .nav-floating {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-floating:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-title {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .step-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+        
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .component-preview {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .command-block {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: monospace;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .command-block::before {
+            content: "$";
+            position: absolute;
+            left: 8px;
+            color: #94a3b8;
+        }
+        
+        .command-block code {
+            margin-left: 15px;
+            display: block;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: #10b981;
+        }
+        
+        .status-inactive {
+            background-color: #ef4444;
+        }
+        
+        .setup-visual {
+            background: linear-gradient(to bottom right, #dbeafe, #bfdbfe);
+            border-radius: 12px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .terminal-window {
+            background: rgba(30, 41, 59, 0.9);
+            border-radius: 8px;
+            width: 80%;
+            height: 150px;
+            padding: 15px;
+            font-family: monospace;
+            color: #cbd5e1;
+            font-size: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .terminal-line {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .terminal-prompt {
+            color: #10b981;
+            margin-right: 8px;
+        }
+        
+        .file-explorer {
+            background: white;
+            border-radius: 8px;
+            width: 200px;
+            height: 150px;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .folder-explorer {
+            margin-left: 15px;
+        }
+        
+        .folder-name {
+            color: #3b82f6;
+        }
+        
+        .file-name {
+            color: #64748b;
+        }
+        
+        .checkpoint {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .checkpoint:hover {
+            background-color: #dbeafe;
+        }
+        
+        .checkpoint-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #e0f2fe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: #0ea5e9;
+        }
+        
+        .checkpoint.completed .checkpoint-icon {
+            background: #dcfce7;
+            color: #10b981;
+        }
+        
+        .setup-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .setup-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .setup-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #3b82f6;
+        }
+        
+        .setup-item:nth-child(2) .setup-icon {
+            color: #10b981;
+        }
+        
+        .setup-item:nth-child(3) .setup-icon {
+            color: #f59e0b;
+        }
+        
+        .setup-item h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .setup-item p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="trail-container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🚀 Frontend Setup</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Set up your React project with Tailwind CSS in just a few minutes</p>
+            
+            <div class="mt-8 inline-flex items-center bg-blue-50 rounded-full py-2 px-6">
+                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                    <i class="fas fa-bolt text-blue-600"></i>
+                </div>
+                <p class="text-blue-700 font-medium">Complete these steps to get your development environment ready</p>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Progress sidebar -->
+            <div class="lg:col-span-1">
+                <div class="trail-card p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Learning Trail Progress</h2>
+                    
+                    <div class="progress-bar mb-6">
+                        <div class="progress-fill" style="width: 20%;" id="progress-fill"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="./porfolio_overview.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                            <div class="font-medium text-gray-500">Project Overview</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_fsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600 active-step">2</div>
+                            <div class="font-medium">Frontend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_component.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">3</div>
+                            <div class="text-gray-500">Building Components</div>
+                        </div>
+                        </a>
+                        <a href="./porforlio_pages.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">4</div>
+                            <div class="text-gray-500">Routing & Pages</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_bsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">5</div>
+                            <div class="text-gray-500">Backend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_api.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">6</div>
+                            <div class="text-gray-500">API Integration</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_testing.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">7</div>
+                            <div class="text-gray-500">Testing & Deployment</div>
+                        </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Current Tools</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Node.js</span>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">npm</span>
+                            <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm">Tailwind CSS</span>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">React</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Setup Checklist</h3>
+                        <div class="space-y-2">
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Node.js installed</div>
+                                    <div class="text-xs text-gray-500">Version 16+ required</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Code editor</div>
+                                    <div class="text-xs text-gray-500">VS Code recommended</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-sync-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Terminal access</div>
+                                    <div class="text-xs text-gray-500">Command Prompt or Terminal</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="lg:col-span-3">
+                <!-- Setup Overview -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600 active-step">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Frontend Setup Guide</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We'll set up the React application with Tailwind CSS for styling. This is like building the foundation of your house before adding walls and furniture. 
+                        Don't worry - I'll explain each step in simple terms!
+                    </p>
+                    
+                    <div class="setup-diagram">
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <h3>Node.js</h3>
+                            <p>JavaScript runtime environment</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <h3>React</h3>
+                            <p>Frontend library for UI</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-wind"></i>
+                            </div>
+                            <h3>Tailwind CSS</h3>
+                            <p>Utility-first CSS framework</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">What We're Creating</h4>
+                                <p class="text-blue-700">We're setting up a new React project called "portfolio-frontend" with Tailwind CSS for styling. This creates all the necessary files and folders to start building your portfolio website.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Install Node.js -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Install Node.js</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Node.js is like the engine that runs JavaScript outside of the browser. We need it to create and run our React application.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg mb-3">Windows & macOS</h3>
+                            <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                                <li>Visit the <a href="https://nodejs.org" class="text-blue-600 hover:underline">Node.js website</a></li>
+                                <li>Download the <span class="font-bold">LTS version</span> (Long Term Support)</li>
+                                <li>Run the installer with all default settings</li>
+                                <li>Restart your computer after installation</li>
+                            </ol>
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-lg mb-3">Verify Installation</h3>
+                            <div class="command-block mb-4">
+                                <code>node -v</code>
+                            </div>
+                            <p class="text-gray-700">Should display version <span class="font-bold">v16.x.x</span> or higher</p>
+                            <div class="command-block mt-2">
+                                <code>npm -v</code>
+                            </div>
+                            <p class="text-gray-700">Should display version <span class="font-bold">8.x.x</span> or higher</p>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-guide p-4 mb-6">
+                        <div class="terminal-window">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span>node -v</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span>v18.12.1</span>
+                            </div>
+                            <div class="terminal-line mt-4">
+                                <span class="terminal-prompt">$</span>
+                                <span>npm -v</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span>8.19.2</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end">
+                        <button class="next-section bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Create React App -->
+                <div class="trail-card p-8 mb-8" id="step2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Create Your React App</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We'll use Create React App - a tool that sets up a new React project with all necessary configurations. 
+                        It's like a starter kit for React applications.
+                    </p>
+                    
+                    <h3 class="font-bold text-gray-800 text-lg mb-4">Run These Commands in Your Terminal</h3>
+                    
+                    <div class="command-block mb-4">
+                        <code>npx create-react-app portfolio-frontend</code>
+                    </div>
+                    <p class="text-gray-700 mb-4">This creates a new React project called "portfolio-frontend". It might take 1-2 minutes.</p>
+                    
+                    <div class="command-block mb-4">
+                        <code>cd portfolio-frontend</code>
+                    </div>
+                    <p class="text-gray-700 mb-6">This moves you into the project directory.</p>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-yellow-500 text-xl">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-yellow-800 mb-1">What Just Happened?</h4>
+                                <p class="text-yellow-700">Create React App generated all the files and folders needed for a basic React application. You now have a working starter project!</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="prev-section bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="next-section bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Install Dependencies -->
+                <div class="trail-card p-8 mb-8" id="step3">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Install Dependencies</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Dependencies are like tools in your toolbox. We need a few extra packages for routing and styling.
+                    </p>
+                    
+                    <h3 class="font-bold text-gray-800 text-lg mb-4">Install These Packages</h3>
+                    
+                    <div class="command-block mb-4">
+                        <code>npm install react-router-dom axios</code>
+                    </div>
+                    <div class="flex items-center mb-6">
+                        <span class="status-indicator status-active"></span>
+                        <span class="text-gray-700"><span class="font-bold">react-router-dom</span>: For navigating between pages</span>
+                    </div>
+                    
+                    <div class="command-block mb-4">
+                        <code>npm install -D tailwindcss postcss autoprefixer</code>
+                    </div>
+                    <div class="flex items-center mb-6">
+                        <span class="status-indicator status-active"></span>
+                        <span class="text-gray-700"><span class="font-bold">Tailwind CSS</span>: For styling our components</span>
+                    </div>
+                    
+                    <div class="command-block mb-4">
+                        <code>npx tailwindcss init -p</code>
+                    </div>
+                    <p class="text-gray-700 mb-6">This creates the configuration files for Tailwind CSS.</p>
+                    
+                    <div class="flex justify-between">
+                        <button class="prev-section bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="next-section bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Configure Tailwind -->
+                <div class="trail-card p-8 mb-8" id="step4">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Configure Tailwind CSS</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We need to set up Tailwind CSS so it knows which files to look at and which styles to generate.
+                    </p>
+                    
+                    <h3 class="font-bold text-gray-800 text-lg mb-4">Update Tailwind Configuration</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">tailwind.config.js</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}</code></pre>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6">This tells Tailwind to look for classes in all JavaScript/JSX files in your src folder.</p>
+                    
+                    <h3 class="font-bold text-gray-800 text-lg mb-4">Add Tailwind Directives to CSS</h3>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/index.css</div>
+                        </div>
+                        <div class="code-content">
+                            <pre class="text-amber-300"><code>@tailwind base;
+@tailwind components;
+@tailwind utilities;</code></pre>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-6">This imports Tailwind's styles into your application.</p>
+                    
+                    <div class="flex justify-between">
+                        <button class="prev-section bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="next-section bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Next Step <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 5: Start Development Server -->
+                <div class="trail-card p-8 mb-8" id="step5">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">5</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Start Development Server</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Let's start the development server to see our React application in action!
+                    </p>
+                    
+                    <div class="command-block mb-4">
+                        <code>npm start</code>
+                    </div>
+                    <p class="text-gray-700 mb-6">This command will automatically open your default browser to <a href="http://localhost:3000" class="text-blue-600 hover:underline">http://localhost:3000</a></p>
+                    
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-green-500 text-xl">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-green-800 mb-1">Congratulations!</h4>
+                                <p class="text-green-700">You've successfully set up your React project with Tailwind CSS. You should see the default React welcome page. We'll replace this with our portfolio in the next steps.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="visual-guide p-4 mb-6">
+                        <div class="flex items-center justify-center h-48 bg-white rounded-lg">
+                            <div class="text-center">
+                                <div class="flex justify-center mb-4">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-blue-600 text-xl"></i>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800">Setup Complete!</h3>
+                                <p class="text-gray-600">Your development environment is ready</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between">
+                        <button class="prev-section bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition">
+                            <i class="fas fa-arrow-left mr-2"></i> Previous
+                        </button>
+                        <button class="complete-setup bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                            Finish Setup <i class="fas fa-check ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Project Structure -->
+                <div class="trail-card p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Project Structure</h2>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Here's what your project folder should look like after completing the setup:
+                    </p>
+                    
+                    <div class="folder-structure mb-6">
+                        <div class="folder">portfolio-frontend/
+                            <div class="file-item">node_modules/</div>
+                            <div class="file-item">public/</div>
+                            <div class="file-item">src/
+                                <div class="file-item">App.js</div>
+                                <div class="file-item">App.css</div>
+                                <div class="file-item">index.js</div>
+                                <div class="file-item">index.css</div>
+                            </div>
+                            <div class="file-item">.gitignore</div>
+                            <div class="file-item">package.json</div>
+                            <div class="file-item">package-lock.json</div>
+                            <div class="file-item">postcss.config.js</div>
+                            <div class="file-item">tailwind.config.js</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">What's Next?</h4>
+                                <p class="text-blue-700">In the next section, we'll start building our portfolio components. You'll create the Navbar, Project Cards, and Contact Form!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="./porfolio_component.html">
+    <div class="nav-floating">
+         <span class="text-sm font-medium mr-2">Next</span>
+        <i class="fas fa-arrow-right mr-2"></i>
+    </div>
+    </a>
+
+     <!-- Home Button - Add to your education page template -->
+    <a href="../index.html" class="fixed bottom-6 left-6 z-40">
+    <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Back</span>
+    </button>
+    </a>
+
+
+    <script>
+        // Progress tracking
+        let currentStep = 2;
+        const totalSteps = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        // Toggle explanations
+        document.querySelectorAll('.toggle-explanation').forEach(button => {
+            button.addEventListener('click', () => {
+                const explanation = button.nextElementSibling;
+                explanation.classList.toggle('open');
+                
+                const icon = button.querySelector('i');
+                if (explanation.classList.contains('open')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+        
+        // Navigation functions
+        document.querySelectorAll('.next-section').forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, this would navigate to the next section
+                // For this demo, we'll just scroll to the next step
+                const steps = document.querySelectorAll('.trail-card');
+                let nextElement = null;
+                
+                for (let i = 0; i < steps.length; i++) {
+                    if (steps[i].contains(button)) {
+                        if (i < steps.length - 1) {
+                            nextElement = steps[i+1];
+                            break;
+                        }
+                    }
+                }
+                
+                if (nextElement) {
+                    nextElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        document.querySelectorAll('.prev-section').forEach(button => {
+            button.addEventListener('click', () => {
+                const steps = document.querySelectorAll('.trail-card');
+                let prevElement = null;
+                
+                for (let i = 0; i < steps.length; i++) {
+                    if (steps[i].contains(button)) {
+                        if (i > 0) {
+                            prevElement = steps[i-1];
+                            break;
+                        }
+                    }
+                }
+                
+                if (prevElement) {
+                    prevElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Complete setup button
+        document.querySelector('.complete-setup')?.addEventListener('click', () => {
+            alert('Frontend setup completed successfully! 🎉\nYou can now proceed to build your portfolio components.');
+        });
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routing & Pages - React Portfolio Learning Trail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --code-bg: #1e293b;
+            --code-header: #0f172a;
+            --explanation-bg: #f1f5f9;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --js-color: #f7df1e;
+            --jsx-color: #61dafb;
+            --css-color: #2965f1;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+            min-height: 100vh;
+            color: #334155;
+        }
+        
+        .trail-container {
+            max-width: 1200px;
+        }
+        
+        .trail-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .trail-card:hover {
+            box-shadow: 0 15px 40px rgba(0, 105, 255, 0.1);
+        }
+        
+        .step-indicator {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .active-step {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .file-tabs {
+            background: var(--code-header);
+            padding: 8px 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-tab {
+            padding: 6px 12px;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+        
+        .file-tab.active {
+            background: var(--code-bg);
+            opacity: 1;
+        }
+        
+        .code-content {
+            padding: 16px;
+            overflow-x: auto;
+        }
+        
+        .explanation {
+            background: var(--explanation-bg);
+            border-radius: 8px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        
+        .explanation.open {
+            max-height: 1000px;
+        }
+        
+        .visual-guide {
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+            border-radius: 12px;
+            border: 1px dashed #3b82f6;
+        }
+        
+        .nav-floating {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-floating:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #60a5fa);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-title {
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        .step-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-active {
+            background-color: var(--success);
+        }
+        
+        .setup-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .setup-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .setup-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setup-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .setup-item:nth-child(2) .setup-icon {
+            color: var(--success);
+        }
+        
+        .setup-item:nth-child(3) .setup-icon {
+            color: var(--warning);
+        }
+        
+        .setup-item h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .setup-item p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        /* Syntax highlighting */
+        .code-keyword {
+            color: #ff79c6;
+        }
+        
+        .code-function {
+            color: #50fa7b;
+        }
+        
+        .code-jsx-element {
+            color: #8be9fd;
+        }
+        
+        .code-import {
+            color: #bd93f9;
+        }
+        
+        .code-string {
+            color: #f1fa8c;
+        }
+        
+        .code-comment {
+            color: #6272a4;
+        }
+        
+        .code-html-tag {
+            color: #ff79c6;
+        }
+        
+        .code-html-attr {
+            color: #50fa7b;
+        }
+        
+        .code-css-prop {
+            color: #66d9ef;
+        }
+        
+        .code-css-value {
+            color: #a6e22e;
+        }
+        
+        .explanation-line {
+            display: flex;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .explanation-line:last-child {
+            border-bottom: none;
+        }
+        
+        .line-number {
+            min-width: 40px;
+            color: #94a3b8;
+            font-family: monospace;
+            text-align: right;
+            padding-right: 12px;
+            border-right: 1px solid #e2e8f0;
+        }
+        
+        .line-explanation {
+            padding-left: 12px;
+            flex-grow: 1;
+        }
+        
+        .code-line {
+            display: flex;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .line-num {
+            width: 40px;
+            color: #64748b;
+            text-align: right;
+            padding-right: 15px;
+            user-select: none;
+        }
+        
+        .line-content {
+            flex-grow: 1;
+            padding-right: 15px;
+        }
+        
+        .routing-visual {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .route-node {
+            position: relative;
+            padding: 15px;
+            background: #e0f2fe;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .route-node:before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .route-children {
+            padding-left: 30px;
+            margin-top: 10px;
+        }
+        
+        .route-child {
+            background: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #94a3b8;
+        }
+        
+        .page-preview {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 300px;
+            position: relative;
+        }
+        
+        .page-header {
+            background: #334155;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+        }
+        
+        .page-content {
+            padding: 20px;
+            height: calc(100% - 40px);
+            overflow-y: auto;
+        }
+        
+        .page-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .page-tab {
+            padding: 8px 16px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .page-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .route-animation {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .route-path {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #cbd5e1;
+        }
+        
+        .route-point {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+            z-index: 10;
+        }
+        
+        .route-label {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+        }
+        
+        .route-point.home { left: 10%; animation: moveHome 8s infinite; }
+        .route-point.projects { left: 35%; animation: moveProjects 8s infinite 1s; }
+        .route-point.contact { left: 60%; animation: moveContact 8s infinite 2s; }
+        .route-point.about { left: 85%; animation: moveAbout 8s infinite 3s; }
+        
+        @keyframes moveHome {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(-100%); }
+        }
+        
+        @keyframes moveProjects {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(0%); }
+        }
+        
+        @keyframes moveContact {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(-100%); }
+        }
+        
+        @keyframes moveAbout {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(0%); }
+        }
+    </style>
+</head>
+<body class="py-8 px-4">
+    <div class="trail-container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">🛣️ Routing & Pages</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Connect your components into a complete multi-page portfolio</p>
+            
+            <div class="mt-8 inline-flex items-center bg-blue-50 rounded-full py-2 px-6">
+                <div class="bg-blue-100 p-2 rounded-full mr-3">
+                    <i class="fas fa-route text-blue-600"></i>
+                </div>
+                <p class="text-blue-700 font-medium">Learn to create multi-page navigation with React Router</p>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Progress sidebar -->
+            <div class="lg:col-span-1">
+                <div class="trail-card p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Learning Trail Progress</h2>
+                    
+                    <div class="progress-bar mb-6">
+                        <div class="progress-fill" style="width: 40%;" id="progress-fill"></div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <a href="./porfolio_overview.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                            <div class="font-medium text-gray-500">Project Overview</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_fsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                            <div class="font-medium text-gray-500">Frontend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_bsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                            <div class="font-medium text-gray-500">Building Components</div>
+                        </div>
+                        </a>
+                        <a href="./porforlio_pages.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-blue-100 text-blue-600 active-step">4</div>
+                            <div class="font-medium">Routing & Pages</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_bsetup.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">5</div>
+                            <div class="text-gray-500">Backend Setup</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_api.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">6</div>
+                            <div class="text-gray-500">API Integration</div>
+                        </div>
+                        </a>
+                        <a href="./porfolio_testing.html">
+                        <div class="flex items-center gap-3">
+                            <div class="step-indicator bg-gray-100 text-gray-400">7</div>
+                            <div class="text-gray-500">Testing & Deployment</div>
+                        </div>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-3">Pages We'll Create</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                                <span>Home Page</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span>Projects Page</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                                <span>Contact Page</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="font-bold text-gray-800 mb-3">Routing Checklist</h3>
+                        <div class="space-y-2">
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Install React Router</div>
+                                    <div class="text-xs text-gray-500">Dependencies</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-check text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Create Page Components</div>
+                                    <div class="text-xs text-gray-500">Home, Projects, Contact</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-sync-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Configure Routes</div>
+                                    <div class="text-xs text-gray-500">App.jsx setup</div>
+                                </div>
+                            </div>
+                            <div class="checkpoint">
+                                <div class="checkpoint-icon">
+                                    <i class="fas fa-sync-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Navigation Links</div>
+                                    <div class="text-xs text-gray-500">Connect Navbar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="lg:col-span-3">
+                <!-- Introduction -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600 active-step">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Routing & Pages Overview</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        In this section, we'll transform our portfolio into a multi-page application using React Router. 
+                        This will allow visitors to navigate between different sections of your portfolio without full page reloads.
+                    </p>
+                    
+                    <div class="setup-diagram">
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <h3>Page Structure</h3>
+                            <p>Organize your portfolio into logical pages</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <h3>React Router</h3>
+                            <p>Handle navigation between pages</p>
+                        </div>
+                        <div class="setup-item">
+                            <div class="setup-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <h3>Navigation</h3>
+                            <p>Connect your Navbar to the routes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="routing-visual mt-8">
+                        <h3 class="font-bold text-gray-800 text-lg mb-4">Portfolio Page Structure</h3>
+                        <div class="route-node">
+                            <div class="font-bold">App Component</div>
+                            <div class="text-sm text-gray-600">Main application container</div>
+                            
+                            <div class="route-children">
+                                <div class="route-child">Navbar (persistent)</div>
+                                <div class="route-child">Routes Container</div>
+                                <div class="route-children">
+                                    <div class="route-child">Home Page (path: "/")</div>
+                                    <div class="route-child">Projects Page (path: "/projects")</div>
+                                    <div class="route-child">Contact Page (path: "/contact")</div>
+                                </div>
+                                <div class="route-child">Footer (persistent)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="route-animation mt-8">
+                        <div class="route-path"></div>
+                        <div class="route-point home">H</div>
+                        <div class="route-label">Home</div>
+                        
+                        <div class="route-point projects">P</div>
+                        <div class="route-label">Projects</div>
+                        
+                        <div class="route-point contact">C</div>
+                        <div class="route-label">Contact</div>
+                        
+                        <div class="route-point about">A</div>
+                        <div class="route-label">About</div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Install React Router -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">1</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Install React Router</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We need to install React Router to handle navigation between pages in our application.
+                    </p>
+                    
+                    <div class="command-block mb-6">
+                        <code>npm install react-router-dom@6</code>
+                    </div>
+                    <p class="text-gray-700 mb-6">This installs version 6 of React Router, which has a simpler API than previous versions.</p>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">Why React Router?</h4>
+                                <p class="text-blue-700">React Router is the standard routing library for React. It enables navigation without page reloads, creating a smooth single-page application experience.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Create Page Components -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">2</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Create Page Components</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We'll create three page components: Home, Projects, and Contact. These will be the main sections of your portfolio.
+                    </p>
+                    
+                    <div class="page-tabs">
+                        <div class="page-tab active" data-target="home-page">Home.jsx</div>
+                        <div class="page-tab" data-target="projects-page">Projects.jsx</div>
+                        <div class="page-tab" data-target="contact-page">Contact.jsx</div>
+                    </div>
+                    
+                    <!-- Home Page -->
+                    <div class="page-section active" id="home-page">
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/pages/Home.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <div class="code-line">
+                                    <div class="line-num">1</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">React</span> <span class="code-keyword">from</span> <span class="code-string">'react'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">2</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> { <span class="code-jsx-element">Link</span> } <span class="code-keyword">from</span> <span class="code-string">'react-router-dom'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">3</div>
+                                    <div class="line-content"></div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">4</div>
+                                    <div class="line-content"><span class="code-keyword">export default function</span> <span class="code-function">Home</span>() {</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">5</div>
+                                    <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">return</span> (</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">6</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"container mx-auto px-4 py-12"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">7</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"flex flex-col md:flex-row items-center"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">8</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"md:w-1/2 mb-8 md:mb-0"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">9</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">h1</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-4xl font-bold mb-4"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">10</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Welcome to My Portfolio</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">11</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">h1</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">12</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">p</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-lg mb-6"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">13</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I'm a passionate developer creating amazing web experiences.</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">14</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">p</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">15</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"flex space-x-4"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">16</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/projects"</span> <span class="code-html-attr">className</span>=<span class="code-string">"bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">17</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View Projects</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">18</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">19</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/contact"</span> <span class="code-html-attr">className</span>=<span class="code-string">"bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">20</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact Me</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">21</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">22</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">23</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">24</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"md:w-1/2 flex justify-center"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">25</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"bg-gray-200 border-2 border-dashed rounded-xl w-64 h-64"</span>&gt;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">26</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">27</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">28</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">29</div>
+                                    <div class="line-content">&nbsp;&nbsp;);</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">30</div>
+                                    <div class="line-content">}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="toggle-explanation w-full bg-blue-50 text-blue-700 font-medium py-3 rounded-lg mb-6">
+                            <i class="fas fa-chevron-down mr-2"></i> Show Explanation
+                        </button>
+                        
+                        <div class="explanation mb-6">
+                            <div class="p-4">
+                                <div class="explanation-line">
+                                    <div class="line-number">1-2</div>
+                                    <div class="line-explanation">Import React and Link component from react-router-dom</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">4</div>
+                                    <div class="line-explanation">Define the Home page component</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">6</div>
+                                    <div class="line-explanation">Container with responsive padding</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">7</div>
+                                    <div class="line-explanation">Flex container that becomes row on medium screens</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">8-23</div>
+                                    <div class="line-explanation">Left column for text content</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">9-11</div>
+                                    <div class="line-explanation">Main heading</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">12-14</div>
+                                    <div class="line-explanation">Introductory paragraph</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">15-22</div>
+                                    <div class="line-explanation">Button links to other pages</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">24-26</div>
+                                    <div class="line-explanation">Right column for profile image (placeholder)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Projects Page -->
+                    <div class="page-section" id="projects-page" style="display:none">
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/pages/Projects.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <div class="code-line">
+                                    <div class="line-num">1</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">React</span> <span class="code-keyword">from</span> <span class="code-string">'react'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">2</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">ProjectCard</span> <span class="code-keyword">from</span> <span class="code-string">'../components/ProjectCard'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">3</div>
+                                    <div class="line-content"></div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">4</div>
+                                    <div class="line-content"><span class="code-keyword">export default function</span> <span class="code-function">Projects</span>() {</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">5</div>
+                                    <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">const</span> <span class="code-jsx-element">projects</span> = [</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">6</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;{</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">7</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">id</span>: 1,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">8</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">title</span>: <span class="code-string">"E-Commerce Platform"</span>,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">9</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">description</span>: <span class="code-string">"A full-featured online shopping platform with payment integration."</span>,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">10</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">technologies</span>: [<span class="code-string">"React"</span>, <span class="code-string">"Node.js"</span>, <span class="code-string">"MongoDB"</span>]</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">11</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;},</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">12</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;{</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">13</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">id</span>: 2,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">14</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">title</span>: <span class="code-string">"Portfolio Website"</span>,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">15</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">description</span>: <span class="code-string">"A responsive portfolio site built with React and Tailwind CSS."</span>,</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">16</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-jsx-element">technologies</span>: [<span class="code-string">"React"</span>, <span class="code-string">"Tailwind"</span>]</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">17</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;},</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">18</div>
+                                    <div class="line-content">&nbsp;&nbsp;];</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">19</div>
+                                    <div class="line-content"></div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">20</div>
+                                    <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">return</span> (</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">21</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"container mx-auto px-4 py-12"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">22</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">h1</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-3xl font-bold mb-8 text-center"</span>&gt;My Projects&lt;/<span class="code-html-tag">h1</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">23</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">24</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{projects.<span class="code-function">map</span>((project) =&gt; (</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">25</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">ProjectCard</span></div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">26</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-html-attr">key</span>={project.id}</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">27</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-html-attr">title</span>={project.title}</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">28</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-html-attr">description</span>={project.description}</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">29</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-html-attr">technologies</span>={project.technologies}</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">30</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">31</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">32</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">33</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">34</div>
+                                    <div class="line-content">&nbsp;&nbsp;);</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">35</div>
+                                    <div class="line-content">}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="toggle-explanation w-full bg-green-50 text-green-700 font-medium py-3 rounded-lg mb-6">
+                            <i class="fas fa-chevron-down mr-2"></i> Show Explanation
+                        </button>
+                        
+                        <div class="explanation mb-6">
+                            <div class="p-4">
+                                <div class="explanation-line">
+                                    <div class="line-number">1-2</div>
+                                    <div class="line-explanation">Import React and the ProjectCard component</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">4</div>
+                                    <div class="line-explanation">Define the Projects page component</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">5-18</div>
+                                    <div class="line-explanation">Sample project data array</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">21</div>
+                                    <div class="line-explanation">Container with padding</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">22</div>
+                                    <div class="line-explanation">Page heading</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">23</div>
+                                    <div class="line-explanation">Grid container for project cards</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">24-31</div>
+                                    <div class="line-explanation">Map through projects to render ProjectCards</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Page -->
+                    <div class="page-section" id="contact-page" style="display:none">
+                        <div class="code-block mb-6">
+                            <div class="file-tabs">
+                                <div class="file-tab active">src/pages/Contact.jsx</div>
+                            </div>
+                            <div class="code-content">
+                                <div class="code-line">
+                                    <div class="line-num">1</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">React</span> <span class="code-keyword">from</span> <span class="code-string">'react'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">2</div>
+                                    <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">ContactForm</span> <span class="code-keyword">from</span> <span class="code-string">'../components/ContactForm'</span>;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">3</div>
+                                    <div class="line-content"></div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">4</div>
+                                    <div class="line-content"><span class="code-keyword">export default function</span> <span class="code-function">Contact</span>() {</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">5</div>
+                                    <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">return</span> (</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">6</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"container mx-auto px-4 py-12"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">7</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"max-w-2xl mx-auto"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">8</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">h1</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-3xl font-bold mb-6 text-center"</span>&gt;Contact Me&lt;/<span class="code-html-tag">h1</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">9</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">p</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-gray-600 mb-8 text-center"</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">10</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Have a question or want to work together? Send me a message!</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">11</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">p</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">12</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">ContactForm</span> /&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">13</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">14</div>
+                                    <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">15</div>
+                                    <div class="line-content">&nbsp;&nbsp;);</div>
+                                </div>
+                                <div class="code-line">
+                                    <div class="line-num">16</div>
+                                    <div class="line-content">}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="toggle-explanation w-full bg-amber-50 text-amber-700 font-medium py-3 rounded-lg mb-6">
+                            <i class="fas fa-chevron-down mr-2"></i> Show Explanation
+                        </button>
+                        
+                        <div class="explanation mb-6">
+                            <div class="p-4">
+                                <div class="explanation-line">
+                                    <div class="line-number">1-2</div>
+                                    <div class="line-explanation">Import React and the ContactForm component</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">4</div>
+                                    <div class="line-explanation">Define the Contact page component</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">6</div>
+                                    <div class="line-explanation">Container with padding</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">7</div>
+                                    <div class="line-explanation">Center content with max width</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">8</div>
+                                    <div class="line-explanation">Page heading</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">9-11</div>
+                                    <div class="line-explanation">Introductory text</div>
+                                </div>
+                                <div class="explanation-line">
+                                    <div class="line-number">12</div>
+                                    <div class="line-explanation">Render the ContactForm component</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Configure Routes in App.jsx -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">3</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Configure Routes in App.jsx</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        Now we'll set up the routing configuration in the main App component to connect our pages.
+                    </p>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/App.jsx</div>
+                        </div>
+                        <div class="code-content">
+                            <div class="code-line">
+                                <div class="line-num">1</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">React</span> <span class="code-keyword">from</span> <span class="code-string">'react'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">2</div>
+                                <div class="line-content"><span class="code-keyword">import</span> { <span class="code-jsx-element">BrowserRouter</span> <span class="code-keyword">as</span> <span class="code-jsx-element">Router</span>, <span class="code-jsx-element">Routes</span>, <span class="code-jsx-element">Route</span> } <span class="code-keyword">from</span> <span class="code-string">'react-router-dom'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">3</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">Navbar</span> <span class="code-keyword">from</span> <span class="code-string">'./components/Navbar'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">4</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">Footer</span> <span class="code-keyword">from</span> <span class="code-string">'./components/Footer'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">5</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">Home</span> <span class="code-keyword">from</span> <span class="code-string">'./pages/Home'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">6</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">Projects</span> <span class="code-keyword">from</span> <span class="code-string">'./pages/Projects'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">7</div>
+                                <div class="line-content"><span class="code-keyword">import</span> <span class="code-jsx-element">Contact</span> <span class="code-keyword">from</span> <span class="code-string">'./pages/Contact'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">8</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">9</div>
+                                <div class="line-content"><span class="code-keyword">function</span> <span class="code-function">App</span>() {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">10</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">return</span> (</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">11</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Router</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">12</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"flex flex-col min-h-screen"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">13</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Navbar</span> /&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">14</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">main</span> <span class="code-html-attr">className</span>=<span class="code-string">"flex-grow container mx-auto p-4"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">15</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Routes</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">16</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Route</span> <span class="code-html-attr">path</span>=<span class="code-string">"/"</span> <span class="code-html-attr">element</span>={&lt;<span class="code-jsx-element">Home</span> /&gt;} /&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">17</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Route</span> <span class="code-html-attr">path</span>=<span class="code-string">"/projects"</span> <span class="code-html-attr">element</span>={&lt;<span class="code-jsx-element">Projects</span> /&gt;} /&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">18</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Route</span> <span class="code-html-attr">path</span>=<span class="code-string">"/contact"</span> <span class="code-html-attr">element</span>={&lt;<span class="code-jsx-element">Contact</span> /&gt;} /&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">19</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">Routes</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">20</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">main</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">21</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Footer</span> /&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">22</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">23</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">Router</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">24</div>
+                                <div class="line-content">&nbsp;&nbsp;);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">25</div>
+                                <div class="line-content">}</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">26</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">27</div>
+                                <div class="line-content"><span class="code-keyword">export default</span> <span class="code-jsx-element">App</span>;</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="toggle-explanation w-full bg-blue-50 text-blue-700 font-medium py-3 rounded-lg mb-6">
+                        <i class="fas fa-chevron-down mr-2"></i> Show Line-by-Line Explanation
+                    </button>
+                    
+                    <div class="explanation mb-6">
+                        <div class="p-4">
+                            <div class="explanation-line">
+                                <div class="line-number">1-7</div>
+                                <div class="line-explanation">Import necessary components and pages</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">9</div>
+                                <div class="line-explanation">Define the main App component</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">11</div>
+                                <div class="line-explanation">Wrap everything in Router component to enable routing</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">12</div>
+                                <div class="line-explanation">Flex container for full-height layout</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">13</div>
+                                <div class="line-explanation">Navbar at the top (appears on all pages)</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">14</div>
+                                <div class="line-explanation">Main content area that grows to fill space</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">15-19</div>
+                                <div class="line-explanation">Routes container to define page routes</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">16-18</div>
+                                <div class="line-explanation">Route definitions for each page</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">21</div>
+                                <div class="line-explanation">Footer at the bottom (appears on all pages)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                        <div class="flex items-start gap-3">
+                            <div class="text-blue-500 text-xl">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-blue-800 mb-1">Key Concept</h4>
+                                <p class="text-blue-700">The Router component must wrap your entire application. This setup keeps the Navbar and Footer persistent across all pages while swapping out the main content based on the current route.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Update Navbar Links -->
+                <div class="trail-card p-8 mb-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="step-indicator bg-blue-100 text-blue-600">4</div>
+                        <h2 class="text-2xl font-bold text-gray-800">Update Navbar Links</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">
+                        We need to update the Navbar component to use React Router's Link component instead of regular anchor tags.
+                    </p>
+                    
+                    <div class="code-block mb-6">
+                        <div class="file-tabs">
+                            <div class="file-tab active">src/components/Navbar.jsx</div>
+                        </div>
+                        <div class="code-content">
+                            <div class="code-line">
+                                <div class="line-num">1</div>
+                                <div class="line-content"><span class="code-keyword">import</span> { <span class="code-jsx-element">Link</span> } <span class="code-keyword">from</span> <span class="code-string">'react-router-dom'</span>;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">2</div>
+                                <div class="line-content"></div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">3</div>
+                                <div class="line-content"><span class="code-keyword">export default function</span> <span class="code-function">Navbar</span>() {</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">4</div>
+                                <div class="line-content">&nbsp;&nbsp;<span class="code-keyword">return</span> (</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">5</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">nav</span> <span class="code-html-attr">className</span>=<span class="code-string">"bg-gray-800 p-4"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">6</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"container mx-auto flex justify-between"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">7</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/"</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-white text-xl font-bold"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">8</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MyPortfolio</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">9</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">10</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">div</span> <span class="code-html-attr">className</span>=<span class="code-string">"space-x-4"</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">11</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/"</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-white hover:text-blue-300"</span>&gt;Home&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">12</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/projects"</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-white hover:text-blue-300"</span>&gt;Projects&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">13</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="code-html-tag">Link</span> <span class="code-html-attr">to</span>=<span class="code-string">"/contact"</span> <span class="code-html-attr">className</span>=<span class="code-string">"text-white hover:text-blue-300"</span>&gt;Contact&lt;/<span class="code-html-tag">Link</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">14</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">15</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">div</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">16</div>
+                                <div class="line-content">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="code-html-tag">nav</span>&gt;</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">17</div>
+                                <div class="line-content">&nbsp;&nbsp;);</div>
+                            </div>
+                            <div class="code-line">
+                                <div class="line-num">18</div>
+                                <div class="line-content">}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="toggle-explanation w-full bg-green-50 text-green-700 font-medium py-3 rounded-lg mb-6">
+                        <i class="fas fa-chevron-down mr-2"></i> Show Explanation
+                    </button>
+                    
+                    <div class="explanation mb-6">
+                        <div class="p-4">
+                            <div class="explanation-line">
+                                <div class="line-number">1</div>
+                                <div class="line-explanation">Import Link component from react-router-dom</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">7-9</div>
+                                <div class="line-explanation">Logo link to home page</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">11-13</div>
+                                <div class="line-explanation">Navigation links to different pages</div>
+                            </div>
+                            <div class="explanation-line">
+                                <div class="line-number">Important</div>
+                                <div class="line-explanation">Using Link instead of anchor tags prevents full page reloads, creating a smoother user experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Page Previews -->
+                <div class="trail-card p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Page Previews</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="page-preview">
+                                <div class="page-header">
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3"></div>
+                                </div>
+                                <div class="page-content bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+                                    <h3 class="font-bold text-xl mb-3">Home Page</h3>
+                                    <div class="flex mb-4">
+                                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4"></div>
+                                        <div>
+                                            <div class="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                            <div class="h-3 bg-gray-200 rounded w-48"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-3">
+                                        <div class="bg-blue-600 text-white px-4 py-2 rounded-lg">View Projects</div>
+                                        <div class="bg-gray-200 px-4 py-2 rounded-lg">Contact Me</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="page-preview">
+                                <div class="page-header">
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3"></div>
+                                </div>
+                                <div class="page-content bg-gradient-to-br from-green-50 to-emerald-50 p-4">
+                                    <h3 class="font-bold text-xl mb-3">Projects Page</h3>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="bg-white p-3 rounded shadow">
+                                            <div class="h-20 bg-gradient-to-r from-purple-400 to-indigo-500 rounded mb-2"></div>
+                                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-1"></div>
+                                            <div class="h-3 bg-gray-200 rounded w-full"></div>
+                                        </div>
+                                        <div class="bg-white p-3 rounded shadow">
+                                            <div class="h-20 bg-gradient-to-r from-amber-400 to-orange-500 rounded mb-2"></div>
+                                            <div class="h-4 bg-gray-200 rounded w-3/4 mb-1"></div>
+                                            <div class="h-3 bg-gray-200 rounded w-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="page-preview">
+                                <div class="page-header">
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3 mr-2"></div>
+                                    <div class="bg-gray-200 rounded-full w-3 h-3"></div>
+                                </div>
+                                <div class="page-content bg-gradient-to-br from-amber-50 to-orange-50 p-4">
+                                    <h3 class="font-bold text-xl mb-3">Contact Page</h3>
+                                    <div class="space-y-3">
+                                        <div class="h-8 bg-gray-200 rounded"></div>
+                                        <div class="h-8 bg-gray-200 rounded"></div>
+                                        <div class="h-24 bg-gray-200 rounded"></div>
+                                        <div class="h-10 bg-blue-600 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div class="trail-card p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">What's Next?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-blue-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-blue-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-check-circle text-blue-600"></i>
+                                What We've Accomplished
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-blue-500 mt-1"></i>
+                                    <span>Set up React Router for navigation</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-blue-500 mt-1"></i>
+                                    <span>Created page components for Home, Projects, and Contact</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-blue-500 mt-1"></i>
+                                    <span>Configured routes in App.jsx</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-blue-500 mt-1"></i>
+                                    <span>Updated Navbar with proper Link components</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-emerald-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-emerald-800 text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-arrow-right text-emerald-600"></i>
+                                Next Steps
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-server text-emerald-500 mt-1"></i>
+                                    <span>Set up the Node.js backend server</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-code text-emerald-500 mt-1"></i>
+                                    <span>Create API endpoint for contact form</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-plug text-emerald-500 mt-1"></i>
+                                    <span>Connect frontend form to backend API</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-rocket text-emerald-500 mt-1"></i>
+                                    <span>Deploy your completed portfolio</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <a href="./porfolio_bsetup.html">
+                    <div class="text-center">
+                        <button class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg font-medium text-lg hover:from-green-700 hover:to-emerald-700 transition">
+                            Continue to Backend Setup <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="./porfolio_bsetup.html">
+    <div class="nav-floating">
+         <span class="text-sm font-medium mr-2">Next</span>
+        <i class="fas fa-arrow-right mr-2"></i>
+    </div>
+    </a>
+
+     <!-- Home Button - Add to your education page template -->
+    <a href="../index.html" class="fixed bottom-6 left-6 z-40">
+    <button class="flex items-center space-x-2 bg-white border-2 border-[#1e3a8a] text-[#1e3a8a] font-bold py-3 px-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:scale-105 hover:bg-[#1e3a8a]/10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Back</span>
+    </button>
+    </a>
+
+
+    <script>
+        // Progress tracking
+        let currentStep = 4;
+        const totalSteps = 7;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+        
+        // Page tab navigation
+        document.querySelectorAll('.page-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                document.querySelectorAll('.page-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.page-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show target section
+                const target = tab.getAttribute('data-target');
+                document.getElementById(target).style.display = 'block';
+            });
+        });
+        
+        // Toggle explanations
+        document.querySelectorAll('.toggle-explanation').forEach(button => {
+            button.addEventListener('click', () => {
+                const explanation = button.nextElementSibling;
+                explanation.classList.toggle('open');
+                
+                const icon = button.querySelector('i');
+                if (explanation.classList.contains('open')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                    button.textContent = button.textContent.replace('Show', 'Hide');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                    button.textContent = button.textContent.replace('Hide', 'Show');
+                }
+            });
+        });
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
